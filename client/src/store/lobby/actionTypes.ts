@@ -1,3 +1,1 @@
-export const LOGIN_USER = 'LOGIN_USER';
-export const LOGOUT_USER = 'LOGOUT_USER';
-export const UPDATE_CONTACT = 'UPDATE_CONTACT';
+export const CALL_INITIATION = 'SOCKET_call-initiation';

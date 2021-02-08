@@ -5,7 +5,7 @@ import { actions } from './actions';
 import { mutations } from './mutations';
 
 export interface LobbyState {
-	users: any[];
+	users: string[];
 }
 
 export const appUserState: LobbyState = {

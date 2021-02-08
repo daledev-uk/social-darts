@@ -56,8 +56,8 @@ export class Server {
                 });
             }
 
-            socket.on("call-user", (data: any) => {
-                socket.to(data.to).emit("call-made", {
+            socket.on("inititateVideoShare", (data: any) => {
+                socket.to(data.to).emit("call-initiation", {
                     offer: data.offer,
                     socket: socket.id
                 });

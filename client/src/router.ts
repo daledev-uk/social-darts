@@ -31,10 +31,10 @@ export function registerRouterHooks() {
 		// if not authenticated, only allow access to registration page
 		if (!authService.isAuthenticated()) {
 			if (to.path.startsWith('/login')) {
-				return next();
+				//return next();
 			}
 
-			return next('/login');
+			//return next('/login');
 		}
 
 
