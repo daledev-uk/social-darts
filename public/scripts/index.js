@@ -59,8 +59,8 @@ function updateUserList(socketIds) {
     });
 }
 
-//const socket = io.connect("localhost:5000");
-const socket = io.connect("67b6ffa8c476.ngrok.io");
+const socket = io.connect("localhost:5000");
+//const socket = io.connect("67b6ffa8c476.ngrok.io");
 
 socket.on("update-user-list", ({ users }) => {
     updateUserList(users);
