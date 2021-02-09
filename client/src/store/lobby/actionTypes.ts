@@ -1,1 +1,1 @@
-export const CALL_INITIATION = 'SOCKET_call-initiation';
+export const MEDIA_STREAM_OFFER = 'SOCKET_MEDIA_STREAM_OFFER';

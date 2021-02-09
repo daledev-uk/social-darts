@@ -45,19 +45,19 @@ export class Server {
             if (!existingSocket) {
                 this.activeSockets.push(socket.id);
 
-                socket.emit("update-user-list", {
+                socket.emit("UPDATE_USER_LIST", {
                     users: this.activeSockets.filter(
                         existingSocket => existingSocket !== socket.id
                     )
                 });
 
-                socket.broadcast.emit("update-user-list", {
+                socket.broadcast.emit("UPDATE_USER_LIST", {
                     users: [socket.id]
                 });
             }
 
-            socket.on("inititateVideoShare", (data: any) => {
-                socket.to(data.to).emit("call-initiation", {
+            socket.on("MEDIA_STREAM_OFFER", (data: any) => {
+                socket.to(data.to).emit("MEDIA_STREAM_OFFER", {
                     offer: data.offer,
                     socket: socket.id
                 });

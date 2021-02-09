@@ -1,10 +1,10 @@
 import { ActionTree } from 'vuex';
 import { LobbyState } from '.';
 import { AppState } from '@/store/app';
-import { CALL_INITIATION } from './actionTypes';
+import { MEDIA_STREAM_OFFER } from './actionTypes';
 
 export const actions: ActionTree<LobbyState, AppState> = {
-    [CALL_INITIATION](state, initiationRequest: any) {
-        console.log(CALL_INITIATION, initiationRequest);
+    [MEDIA_STREAM_OFFER](state, initiationRequest: any) {
+        console.log(MEDIA_STREAM_OFFER, initiationRequest);
     }
 };

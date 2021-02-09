@@ -21,8 +21,9 @@ Vue.use(new VueSocketIO({
 // the auth service has been initialised
 registerRouterHooks();
 
-new Vue({
+const vueInstnace = new Vue({
     router,
     store,
     render: h => h(App)
 }).$mount('#app');
+console.log('vueInstnace', vueInstnace);

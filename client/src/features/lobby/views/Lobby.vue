@@ -24,9 +24,7 @@
 import { Component, Vue } from "vue-property-decorator";
 import {Action, Getter} from 'vuex-class';
 import SocketIOClient from "socket.io-client";
-
-const { RTCPeerConnection, RTCSessionDescription } = window;
-const peerConnection = new RTCPeerConnection();
+import {socketApi} from '../../../services/socketService';
 
 @Component
 export default class Lobby extends Vue {
@@ -35,14 +33,14 @@ export default class Lobby extends Vue {
 
 	public async mounted() {
 		try {
-			const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
+			const mediaStream: MediaStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
 
 			const localVideo = document.getElementById("local-video") as HTMLVideoElement;
 			if (localVideo) {
-				localVideo.srcObject = stream;
+				localVideo.srcObject = mediaStream;
 			}
 
-			stream.getTracks().forEach(track => peerConnection.addTrack(track, stream));
+			socketApi.addMediaTracks(mediaStream);
 		} catch (err) {
 			console.warn(err.message);
 		}
@@ -57,19 +55,8 @@ export default class Lobby extends Vue {
 		return this.selectedUser ? `Talking with: "Socket: ${this.selectedUser}"` : 'Select active user on the left menu.';
 	}
 
-	private async callUser(socketId) {
-		const offer = await peerConnection.createOffer();
-		await peerConnection.setLocalDescription(new RTCSessionDescription(offer));
-
-		console.log('this.$socket', this.socket);
-		this.socket.emit("inititateVideoShare", {
-			offer,
-			to: socketId
-		});
-	}
-
-	private get socket(): SocketIOClient.Socket {
-		return (this as any).$socket;
+	private async callUser(socketId: string) {
+		socketApi.offerUserVideoShare(socketId);
 	}
 }
 </script>
