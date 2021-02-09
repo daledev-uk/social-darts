@@ -6,10 +6,12 @@ import { mutations } from './mutations';
 
 export interface LobbyState {
 	users: string[];
+	remoteMediaStream?: MediaStream;
 }
 
 export const appUserState: LobbyState = {
 	users: [],
+	remoteMediaStream: undefined
 };
 
 export const lobby: Module<LobbyState, AppState> = {

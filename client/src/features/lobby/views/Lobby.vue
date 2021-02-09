@@ -13,8 +13,8 @@
 			{{ talkingWithHeaderText }}
 		</h2>
 		<div class="video-container">
-			<video autoplay class="remote-video" id="remote-video"></video>
-			<video autoplay muted class="local-video" id="local-video" style="position: fixed"></video>
+			<RemoteVideo />
+			<LocalVideo />
 		</div>
 	</div>
 </section>
@@ -23,28 +23,20 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import {Action, Getter} from 'vuex-class';
-import SocketIOClient from "socket.io-client";
+import {peerApi} from '../../../services/peerConnectionService';
 import {socketApi} from '../../../services/socketService';
+import LocalVideo from '../components/LocalVideo.vue';
+import RemoteVideo from '../components/RemoteVideo.vue';
 
-@Component
+@Component({
+	components: {
+		LocalVideo,
+		RemoteVideo
+	}
+})
 export default class Lobby extends Vue {
 	@Getter public users!: string[];
 	public selectedUser: string = '';
-
-	public async mounted() {
-		try {
-			const mediaStream: MediaStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
-
-			const localVideo = document.getElementById("local-video") as HTMLVideoElement;
-			if (localVideo) {
-				localVideo.srcObject = mediaStream;
-			}
-
-			socketApi.addMediaTracks(mediaStream);
-		} catch (err) {
-			console.warn(err.message);
-		}
-	}
 
 	public selectUser(userId: string) {        
 		this.selectedUser = userId;        
@@ -56,7 +48,8 @@ export default class Lobby extends Vue {
 	}
 
 	private async callUser(socketId: string) {
-		socketApi.offerUserVideoShare(socketId);
+		const offer = await peerApi.setupLocalPeerOffer();
+		socketApi.offerUserVideoShare(socketId, offer);
 	}
 }
 </script>

@@ -23,11 +23,13 @@
 import { Component, Prop, Vue, Watch } from "vue-property-decorator";
 import SocketIOClient from "socket.io-client";
 import { socketApi } from "./services/socketService";
+import { peerApi } from "./services/peerConnectionService";
 
 @Component
 export default class App extends Vue {
   public created() {
-	  socketApi.init(window, ((this as any).$socket as SocketIOClient.Socket))
+    peerApi.createPeerConnection(window);
+	  socketApi.init((this as any).$socket as SocketIOClient.Socket);
   }
 }
 </script>
@@ -124,9 +126,12 @@ body {
 }
 
 .remote-video {
+  position: fixed;
+  right:0;
+  top:0;
   border: 1px solid #cddfe7;
-  width: 100%;
-  height: 100%;
+  width: 500px;
+  height: 500px;
   box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.2);
 }
 

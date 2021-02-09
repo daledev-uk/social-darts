@@ -26,4 +26,3 @@ const vueInstnace = new Vue({
     store,
     render: h => h(App)
 }).$mount('#app');
-console.log('vueInstnace', vueInstnace);

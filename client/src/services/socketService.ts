@@ -2,32 +2,24 @@ import Vue from "vue";
 
 class SocketService {
 	private socket: SocketIOClient.Socket;
-    private RTCPeerConnection: any;
-    private RTCSessionDescription: any;
 
-    private peerConnection: RTCPeerConnection;
-
-    public init(window: any, socket: SocketIOClient.Socket) {
-        this.RTCPeerConnection = window.RTCPeerConnection;
-        this.RTCSessionDescription = window.RTCSessionDescription;
+    public init(socket: SocketIOClient.Socket) {
         this.socket = socket;
-        this.peerConnection = new RTCPeerConnection();
-    }
-
-    public addMediaTracks(mediaStream: MediaStream) {
-        mediaStream.getTracks().forEach(track => this.peerConnection.addTrack(track, mediaStream));
     }
 	
-    public async offerUserVideoShare(socketId: string) {
-		const offer = await this.peerConnection.createOffer();
-		await this.peerConnection.setLocalDescription(new RTCSessionDescription(offer));
-
-		console.log('this.$socket', this.socket);
+    public async offerUserVideoShare(socketId: string, offer: RTCSessionDescriptionInit) {
 		this.socket.emit("MEDIA_STREAM_OFFER", {
 			offer,
 			to: socketId
 		});
 	}
+
+	public acceptMediaStreamShare(answer: RTCSessionDescriptionInit, socketId: string) {
+        this.socket.emit("ACCEPTED_STREAM_OFFER", {
+            answer,
+            to: socketId
+        });
+    }
 }
 
 export const socketApi = new SocketService();

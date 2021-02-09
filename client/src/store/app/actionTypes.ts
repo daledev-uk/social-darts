@@ -1,2 +1,1 @@
-export const UPDATE_USER_LIST = 'SOCKET_UPDATE_USER_LIST';
 

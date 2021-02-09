@@ -21,19 +21,7 @@ export class Server {
         this.httpServer = createServer(this.app);
         this.io = socketIO(this.httpServer);
 
-        this.configureApp();
-        this.configureRoutes();
         this.handleSocketConnection();
-    }
-
-    private configureApp(): void {
-        this.app.use(express.static(path.join(__dirname, "../public")));
-    }
-
-    private configureRoutes(): void {
-        this.app.get("/", (req, res) => {
-            res.sendFile("index.html");
-        });
     }
 
     private handleSocketConnection(): void {
@@ -63,8 +51,8 @@ export class Server {
                 });
             });
 
-            socket.on("make-answer", data => {
-                socket.to(data.to).emit("answer-made", {
+            socket.on("ACCEPTED_STREAM_OFFER", data => {
+                socket.to(data.to).emit("MEDIA_STREAM_ACCEPTED", { // answer-made
                     socket: socket.id,
                     answer: data.answer
                 });
