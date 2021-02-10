@@ -5,6 +5,7 @@ import authService from '@/services/security/authenticationService';
 
 import Login from '@/features/login/views/Login.vue';
 import Lobby from '@/features/lobby/views/Lobby.vue';
+import { loginApi } from './services/api/loginApi';
 
 Vue.use(Router);
 
@@ -27,15 +28,25 @@ const router = new Router({
 
 
 export function registerRouterHooks() {
-	router.beforeEach((to, from, next) => {
+	router.beforeEach(async (to, from, next) => {
+		console.log('to', JSON.stringify(to, null, 4));
+
 		// if not authenticated, only allow access to registration page
-		if (!authService.isAuthenticated()) {
+		//if (!authService.isAuthenticated()) {
 			if (to.path.startsWith('/login')) {
+				if (to.path === '/login/callback') {
+					const code = String(to.query.code);
+					const loginResult = await loginApi.loginCallback(code);
+					if (loginResult.success) {
+						return next('/lobby');
+					}
+					return next('/login');
+				}
 				//return next();
 			}
 
 			//return next('/login');
-		}
+		//}
 
 
 		// allow anything else

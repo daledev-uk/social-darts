@@ -1,7 +1,8 @@
 import express, { Application } from "express";
+import cors from "cors";
 import socketIO, { Server as SocketIOServer } from "socket.io";
 import { createServer, Server as HTTPServer } from "http";
-import path from "path";
+import {googleSecurity} from "./security/googleSecurity";
 
 export class Server {
     private httpServer: HTTPServer;
@@ -18,10 +19,19 @@ export class Server {
 
     private initialize(): void {
         this.app = express();
+        this.app.use(cors());
         this.httpServer = createServer(this.app);
+        this.setupRouting(this.app);
         this.io = socketIO(this.httpServer);
 
         this.handleSocketConnection();
+    }
+
+    private setupRouting(app: express.Application) {
+        //app.use(securityChecks);
+    
+        app.get('/login', googleSecurity.login);
+        app.get('/login/callback', googleSecurity.loginCallback);
     }
 
     private handleSocketConnection(): void {

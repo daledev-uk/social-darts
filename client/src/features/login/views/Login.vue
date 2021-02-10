@@ -1,5 +1,7 @@
 <template>
-  <div id="app">Login</div>
+  <div id="app">
+    <a class="loginButton" href="http://localhost:5000/login">Login with google</a>
+  </div>
 </template>
 
 <script lang="ts">
@@ -10,4 +12,7 @@ export default class Login extends Vue {}
 </script>
 
 <style lang="scss">
+.loginButton {
+	margin: auto;
+}
 </style>

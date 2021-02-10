@@ -6,7 +6,7 @@ class BaseApiClient {
 
 	public send<T>(method: string, url: string, data: object = {}, headers: object = {}): Promise<T> {
 		return config().then((appConfig) => {
-			const urlToCall = urljoin(appConfig.apiHost, appConfig.apiVersion, url);
+			const urlToCall = url.startsWith('http') ? url : urljoin(appConfig.apiHost, appConfig.apiVersion, url);
 			return axios(urlToCall, {
 				method,
 				data,
