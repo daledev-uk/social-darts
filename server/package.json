@@ -5,9 +5,11 @@
     "dev": "nodemon src/index.ts"
   },
   "dependencies": {
+    "@google-cloud/firestore": "^4.9.3",
     "cors": "2.8.5",
     "express": "^4.17.1",
     "google-auth-library": "7.0.2",
+    "googleapis": "^67.0.0",
     "socket.io": "^2.3.0"
   },
   "devDependencies": {

@@ -30,8 +30,8 @@ export class Server {
     private setupRouting(app: express.Application) {
         //app.use(securityChecks);
     
-        app.get('/login', googleSecurity.login);
-        app.get('/login/callback', googleSecurity.loginCallback);
+        app.get('/login', (req, res) => googleSecurity.login(req, res));
+        app.get('/login/callback', (req, res) => googleSecurity.loginCallback(req, res));
     }
 
     private handleSocketConnection(): void {

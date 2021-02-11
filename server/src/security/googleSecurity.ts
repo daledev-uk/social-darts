@@ -1,7 +1,9 @@
-import { NextFunction, Request, Response } from "express";
-import { OAuth2Client } from "google-auth-library";
+import { NextFunction, Request, Response } from 'express';
+import { OAuth2Client } from 'google-auth-library';
+import {google} from 'googleapis';
+import {createUser} from '../features/users/createUser';
 
-const keys = require('./google_client_secret.json');
+const keys = require('../config/google_client_secret.json');
 
 class GoogleSecurity {
 
@@ -35,11 +37,40 @@ class GoogleSecurity {
             const tokenResponse = await oAuth2Client.getToken(code);
             oAuth2Client.setCredentials(tokenResponse.tokens);
 
+            const userProfile = await this.getUserProfile(tokenResponse.tokens.access_token);
+            createUser.run({
+                givenName: userProfile.given_name,
+                lastName: userProfile.family_name,
+                displayName: userProfile.name,
+                email: userProfile.email,
+                profileImage: userProfile.picture
+            });
+
             response.end(JSON.stringify({success: true}));
         } catch(err) {
+            console.error('Failed to login: ', err);
             response.end(JSON.stringify({success: false}));
         }
     };
+
+    private async getUserProfile(accessToken: string): Promise<any> {
+        return new Promise((resolve, reject) => {
+            const oauth2Client = new google.auth.OAuth2();
+            oauth2Client.setCredentials({access_token: accessToken});
+            const oauth2 = google.oauth2({
+                auth: oauth2Client,
+                version: 'v2'
+            });
+    
+            oauth2.userinfo.get((err, res) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(res.data);
+                }
+            });
+        });
+    }
 }
 
 export const googleSecurity = new GoogleSecurity();
