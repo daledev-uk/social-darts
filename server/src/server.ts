@@ -3,6 +3,7 @@ import cors from "cors";
 import socketIO, { Server as SocketIOServer } from "socket.io";
 import { createServer, Server as HTTPServer } from "http";
 import {googleSecurity} from "./security/googleSecurity";
+import { apiAuthentication } from "./security/apiAuthentication";
 
 export class Server {
     private httpServer: HTTPServer;
@@ -28,10 +29,12 @@ export class Server {
     }
 
     private setupRouting(app: express.Application) {
-        //app.use(securityChecks);
+        app.use(apiAuthentication.authenticate);
     
         app.get('/login', (req, res) => googleSecurity.login(req, res));
         app.get('/login/callback', (req, res) => googleSecurity.loginCallback(req, res));
+
+        app.get('/init', (req, res) => googleSecurity.loginCallback(req, res));
     }
 
     private handleSocketConnection(): void {

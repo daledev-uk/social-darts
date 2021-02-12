@@ -1,23 +1,29 @@
 <template>
-<section>
-	<div class="active-users-panel" id="active-user-container">
-		<h3 class="panel-title">Active Users:</h3>
-
-		<div v-for="userId in users" :key="userId" :id="userId" class="active-user" @click="selectUser(userId)">
-			<p class="username">Socket: {{ userId }}</p>
-		</div>
-
-	</div>
-	<div class="video-chat-container">
-		<h2 class="talk-info" id="talking-with-info">
-			{{ talkingWithHeaderText }}
-		</h2>
-		<div class="video-container">
-			<RemoteVideo />
-			<LocalVideo />
-		</div>
-	</div>
-</section>
+	<b-container>
+		<b-row>
+			<b-col>
+				<p>Users</p>
+				<b-tabs content-class="mt-3">
+					<b-tab title="Online" active>
+						<b-list-group>
+							<b-list-group-item v-for="user in users" :key="user">
+								{{ user }}
+							</b-list-group-item>
+						</b-list-group>
+					</b-tab>
+					<b-tab title="Favourites">
+						<p>No favourites</p>
+					</b-tab>
+				</b-tabs>
+			</b-col>
+			<b-col>
+				<p>Your stats</p>
+			</b-col>
+			<b-col>
+				<p>Games in progress</p>
+			</b-col>
+		</b-row>
+	</b-container>
 </template>
 
 <script lang="ts">

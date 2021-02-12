@@ -1,7 +1,14 @@
 <template>
-  <div id="app">
-    <a class="loginButton" href="http://localhost:5000/login">Login with google</a>
-  </div>
+  <b-card bg-variant="dark" text-variant="white" title="Social Darts">
+    <b-card-text>
+      Play darts with your friends remote with the need any any special equipment.
+    </b-card-text>
+
+    <b-button href="http://localhost:5000/login" variant="secondary">
+      <img src="https://img.icons8.com/color/16/000000/google-logo.png">
+      Sign-in Using Google
+    </b-button>
+  </b-card>
 </template>
 
 <script lang="ts">

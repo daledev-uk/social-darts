@@ -21,6 +21,10 @@ const router = new Router({
 			component: Login
 		},
 		{
+			path: '/logout',
+			name: 'logut'
+		},
+		{
 			path: '/',
 			name: 'lobby',
 			component: Lobby
@@ -44,6 +48,11 @@ router.beforeEach(async (to: Route, from: Route, next: Function) => {
 			return await handleLogin(to, from, next);
 		}
 		return next('/');
+	}
+
+	if (to.path.startsWith('/logout')) {
+		authentication.clearUser();
+		return next('/login');
 	}
 
 	next();
