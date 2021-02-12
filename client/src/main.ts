@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import App from './App.vue';
-import router, {registerRouterHooks} from './router';
+import router from './router';
 import {store} from './store';
 import VueSocketIO from 'vue-socket.io';
 
@@ -16,10 +16,6 @@ Vue.use(new VueSocketIO({
         mutationPrefix: 'SOCKET_',
     },
 }));
-
-// only enforce authentication once we know
-// the auth service has been initialised
-registerRouterHooks();
 
 const vueInstnace = new Vue({
     router,

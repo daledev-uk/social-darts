@@ -1,13 +1,15 @@
 import Vue from 'vue';
-import Router from 'vue-router';
-
-import authService from '@/services/security/authenticationService';
+import Router, { Route } from 'vue-router';
 
 import Login from '@/features/login/views/Login.vue';
 import Lobby from '@/features/lobby/views/Lobby.vue';
 import { loginApi } from './services/api/loginApi';
+import { authentication } from './security/authentication';
+import { AuthenticatedUserViewModel } from './models/authenticatedUserViewModel';
 
 Vue.use(Router);
+
+const publicPages = ['/login', '/login/callback'];
 
 const router = new Router({
 	mode: 'history',
@@ -27,31 +29,41 @@ const router = new Router({
 });
 
 
-export function registerRouterHooks() {
-	router.beforeEach(async (to, from, next) => {
-		console.log('to', JSON.stringify(to, null, 4));
 
-		// if not authenticated, only allow access to registration page
-		//if (!authService.isAuthenticated()) {
-			if (to.path.startsWith('/login')) {
-				if (to.path === '/login/callback') {
-					const code = String(to.query.code);
-					const loginResult = await loginApi.loginCallback(code);
-					if (loginResult.success) {
-						return next('/lobby');
-					}
-					return next('/login');
-				}
-				//return next();
-			}
+router.beforeEach(async (to: Route, from: Route, next: Function) => {
+	const authRequired = !publicPages.includes(to.path);
+	const authToken = authentication.getJwtToken();
+	console.log('to: ', to.path, 'authRequired: ', authRequired, 'authToken: ', authToken);
 
-			//return next('/login');
-		//}
+    if (authRequired && !authToken) {
+        return next('/login');
+    }
 
+	if (to.path.startsWith('/login')) {
+		if (!authToken) {
+			return await handleLogin(to, from, next);
+		}
+		return next('/');
+	}
 
-		// allow anything else
-		next();
-	});
+	next();
+});
+
+async function handleLogin(to: Route, from: Route, next: Function) {
+	if (to.path === '/login/callback') {
+		const code = String(to.query.code);
+		const loginResult: AuthenticatedUserViewModel = await loginApi.loginCallback(code);
+		if (loginResult.success) {
+			authentication.setUser(loginResult);
+			return next('/');
+		} else {
+			authentication.clearUser();
+			return next('/login');
+		}
+	}
+
+	return next();
 }
+
 
 export default router;

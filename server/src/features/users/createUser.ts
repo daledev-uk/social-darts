@@ -1,10 +1,11 @@
 import { CreateUserRequest } from "./models/createUserRequest"
+import { User } from "./models/user";
 import {userRepo} from './userRepo';
 
 class CreateUser {
-    public async run(request: CreateUserRequest) {
+    public async run(request: CreateUserRequest): Promise<User> {
         console.log('Create User', request);
-        await userRepo.create({
+        return userRepo.create({
             displayName: request.displayName,
             givenName: request.givenName,
             lastName: request.lastName,

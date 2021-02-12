@@ -1,9 +1,13 @@
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import { OAuth2Client } from 'google-auth-library';
 import {google} from 'googleapis';
 import {createUser} from '../features/users/createUser';
+import { User } from '../features/users/models/user';
+import { LoginResponseViewModel } from './viewModels/loginResponseViewModel';
+import * as jwt from "jsonwebtoken";
 
 const keys = require('../config/google_client_secret.json');
+const SECRET_KEY = "SECRET123"; // Move to system property
 
 class GoogleSecurity {
 
@@ -26,6 +30,7 @@ class GoogleSecurity {
     }
 
     public async loginCallback(request: Request, response: Response) {
+        let responseContent: LoginResponseViewModel;
         try {
             const code = request.query.code as string;
             const oAuth2Client = new OAuth2Client(
@@ -38,7 +43,7 @@ class GoogleSecurity {
             oAuth2Client.setCredentials(tokenResponse.tokens);
 
             const userProfile = await this.getUserProfile(tokenResponse.tokens.access_token);
-            createUser.run({
+            const user: User = await createUser.run({
                 givenName: userProfile.given_name,
                 lastName: userProfile.family_name,
                 displayName: userProfile.name,
@@ -46,11 +51,17 @@ class GoogleSecurity {
                 profileImage: userProfile.picture
             });
 
-            response.end(JSON.stringify({success: true}));
+            responseContent = {
+                success: true,
+                user,
+                token: jwt.sign(user, SECRET_KEY)
+            };
         } catch(err) {
             console.error('Failed to login: ', err);
-            response.end(JSON.stringify({success: false}));
+            responseContent = { success: false };            
         }
+
+        response.end(JSON.stringify(responseContent));
     };
 
     private async getUserProfile(accessToken: string): Promise<any> {

@@ -13,10 +13,11 @@ class UserRepo {
         });
     }
 
-    public async create(user: User) {
+    public async create(user: User): Promise<User> {
         const document = this.firestore.doc(`users/${user.email}`);        
         const result = await document.set(user);
         console.log('result', result);
+        return user;
     }
 }
 
