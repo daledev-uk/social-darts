@@ -21,7 +21,7 @@ export default class RemoteVideo extends Vue {
 			const remoteVideo = this.$refs.remoteVidElement as HTMLVideoElement;
 			if (remoteVideo) {
 				remoteVideo.srcObject = stream;
-			}			
+			}
 		}
 	}
 }

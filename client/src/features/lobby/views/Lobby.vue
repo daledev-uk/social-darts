@@ -57,9 +57,9 @@ export default class Lobby extends Vue {
 	@Getter public users!: string[];
 	public selectedUser: string = '';
 
-	public selectUser(userId: string) {        
-		this.selectedUser = userId;        
-        this.callUser(userId);
+	public selectUser(userId: string) {
+		this.selectedUser = userId;
+  this.callUser(userId);
 	}
 
 	public get talkingWithHeaderText() {

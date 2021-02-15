@@ -13,17 +13,17 @@ Vue.config.productionTip = false;
 Vue.use(BootstrapVue);
 Vue.use(IconsPlugin);
 Vue.use(new VueSocketIO({
-    connection: API_SERVER_URL,
-    vuex: {
-        store,
-        actionPrefix: 'SOCKET_',
-        mutationPrefix: 'SOCKET_',
-    },
+	connection: API_SERVER_URL,
+	vuex: {
+		store,
+		actionPrefix: 'SOCKET_',
+		mutationPrefix: 'SOCKET_',
+	},
 }));
 
 const vueInstnace = new Vue({
-    router,
-    store,
-    vuetify,
-    render: h => h(App)
+	router,
+	store,
+	vuetify,
+	render: h => h(App)
 }).$mount('#app');

@@ -11,7 +11,7 @@ export default class LocalVideo extends Vue {
 	public error = false;
 
 	public async mounted() {
-		try {            
+		try {
 			const mediaStream: MediaStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
 
 			const localVideo = this.$refs.localVidElement as HTMLVideoElement;
@@ -19,10 +19,10 @@ export default class LocalVideo extends Vue {
 				localVideo.srcObject = mediaStream;
 			}
 
-            peerApi.addMediaStream(mediaStream);
+   peerApi.addMediaStream(mediaStream);
 		} catch (err) {
-            this.error = true; 
-			console.warn(err.message);
+			this.error = true;
+			         console.warn(err.message);
 		}
 	}
 }

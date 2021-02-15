@@ -31,8 +31,8 @@ import { peerApi } from './services/peerConnectionService';
 @Component
 export default class App extends Vue {
   public created() {
-    peerApi.createPeerConnection(window);
-    socketApi.init((this as any).$socket as SocketIOClient.Socket);
+	peerApi.createPeerConnection(window);
+	socketApi.init((this as any).$socket as SocketIOClient.Socket);
   }
 }
 </script>

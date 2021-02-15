@@ -39,9 +39,9 @@ router.beforeEach(async (to: Route, from: Route, next: Function) => {
 	const authToken = authentication.getJwtToken();
 	console.log('to: ', to.path, 'authRequired: ', authRequired, 'authToken: ', authToken);
 
-    if (authRequired && !authToken) {
-        return next('/login');
-    }
+ if (authRequired && !authToken) {
+		return next('/login');
+	}
 
 	if (to.path.startsWith('/login')) {
 		if (!authToken) {
