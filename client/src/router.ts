@@ -34,7 +34,7 @@ const router = new Router({
 
 
 
-router.beforeEach(async (to: Route, from: Route, next: Function) => {
+router.beforeEach(async (to: Route, from: Route, next: (target?: string) => void) => {
 	const authRequired = !publicPages.includes(to.path);
 	const authToken = authentication.getJwtToken();
 	console.log('to: ', to.path, 'authRequired: ', authRequired, 'authToken: ', authToken);
@@ -58,7 +58,7 @@ router.beforeEach(async (to: Route, from: Route, next: Function) => {
 	next();
 });
 
-async function handleLogin(to: Route, from: Route, next: Function) {
+async function handleLogin(to: Route, from: Route, next: (target?: string) => void) {
 	if (to.path === '/login/callback') {
 		const code = String(to.query.code);
 		const loginResult: AuthenticatedUserViewModel = await loginApi.loginCallback(code);
