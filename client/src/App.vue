@@ -9,7 +9,8 @@
 						</h1>
 					</v-col>
 					<v-col align="right">
-						<v-btn to="logout" rounded>Logout</v-btn>
+						<TestVideoModel />
+						<v-btn to="logout" rounded color="primary">Logout</v-btn>
 					</v-col>
 				</v-row>
 			</v-container>
@@ -28,8 +29,13 @@ import { Component, Vue } from 'vue-property-decorator';
 import SocketIOClient from "socket.io-client";
 import { socketApi } from './services/socketService';
 import { peerApi } from './services/peerConnectionService';
+import TestVideoModel from './features/test-video/components/TestVideoModel.vue';
 
-@Component
+@Component({
+	components: {
+		TestVideoModel
+	}
+})
 export default class App extends Vue {
   public created() {
 	peerApi.createPeerConnection(window);
@@ -40,8 +46,9 @@ export default class App extends Vue {
 
 <style lang="scss" scope>
 .header {
-	background-image: linear-gradient(black, grey), url(./assets/crowd.jpg);
+	background-image: linear-gradient(black, #252525), url(./assets/crowd.jpg);
   	background-size: 100% 350px;
+	background-position-y: -150px;
   	background-blend-mode: saturation;
 }
 

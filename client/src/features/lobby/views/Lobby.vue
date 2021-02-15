@@ -56,10 +56,11 @@ import RemoteVideo from '../components/RemoteVideo.vue';
 export default class Lobby extends Vue {
 	@Getter public users!: string[];
 	public selectedUser: string = '';
+	public tab = '';
 
 	public selectUser(userId: string) {
 		this.selectedUser = userId;
-  this.callUser(userId);
+  		this.callUser(userId);
 	}
 
 	public get talkingWithHeaderText() {
