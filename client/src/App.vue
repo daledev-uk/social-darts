@@ -1,29 +1,34 @@
 <template>
-	<v-container>
-		<v-row align-v="center" align-h="between" class="header">
-			<v-col>
-				<div class="logo-container">
-					<img src="./asserts/dartboard.png" alt="social darts logo" class="logo-img" />
-					<h1 class="logo-text">
-						Social
-						<span class="logo-highlight">Darts</span>
-					</h1>
-				</div>
-			</v-col>
-			<v-col align="right">
-				<v-btn to="logout" rounded>Logout</v-btn>
-			</v-col>
-		</v-row>
-		<v-row>
-			<v-col>
+	<v-app>
+		<v-app-bar app>
+			<v-container>
+				<v-row valign="center" class="header">
+					<v-col>
+						<div class="logo-container">
+							<img src="./asserts/dartboard.png" alt="social darts logo" class="logo-img" />
+							<h1 class="logo-text">
+								Social
+								<span class="logo-highlight">Darts</span>
+							</h1>
+						</div>
+					</v-col>
+					<v-col align="right">
+						<v-btn to="logout" rounded>Logout</v-btn>
+					</v-col>
+				</v-row>
+			</v-container>
+		</v-app-bar>
+		<v-main>
+			<!-- Provides the application the proper gutter -->
+			<v-container fluid>
 				<router-view />
-			</v-col>
-		</v-row>
-	</v-container>
+			</v-container>
+		</v-main>
+	</v-app>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
+import { Component, Vue } from 'vue-property-decorator';
 import SocketIOClient from "socket.io-client";
 import { socketApi } from './services/socketService';
 import { peerApi } from './services/peerConnectionService';
