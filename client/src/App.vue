@@ -1,7 +1,7 @@
 <template>
-	<b-container>
-		<b-row align-v="center" align-h="between" class="header">
-			<b-col cols="4">
+	<v-container>
+		<v-row align-v="center" align-h="between" class="header">
+			<v-col>
 				<div class="logo-container">
 					<img src="./asserts/dartboard.png" alt="social darts logo" class="logo-img" />
 					<h1 class="logo-text">
@@ -9,24 +9,24 @@
 						<span class="logo-highlight">Darts</span>
 					</h1>
 				</div>
-			</b-col>
-			<b-col cols="4">
-				<b-button pill variant="primary" to="logout">Logout</b-button>
-			</b-col>
-		</b-row>
-		<b-row>
-			<b-col>
+			</v-col>
+			<v-col align="right">
+				<v-btn to="logout" rounded>Logout</v-btn>
+			</v-col>
+		</v-row>
+		<v-row>
+			<v-col>
 				<router-view />
-			</b-col>
-		</b-row>
-	</b-container>
+			</v-col>
+		</v-row>
+	</v-container>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue, Watch } from "vue-property-decorator";
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import SocketIOClient from "socket.io-client";
-import { socketApi } from "./services/socketService";
-import { peerApi } from "./services/peerConnectionService";
+import { socketApi } from './services/socketService';
+import { peerApi } from './services/peerConnectionService';
 
 @Component
 export default class App extends Vue {

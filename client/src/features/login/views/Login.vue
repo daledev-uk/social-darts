@@ -1,14 +1,25 @@
 <template>
-  <b-card bg-variant="dark" text-variant="white" title="Social Darts">
-    <b-card-text>
+  <v-card bg-variant="dark" text-variant="white" title="Social Darts">
+    <v-card-text>
       Play darts with your friends remote with the need any any special equipment.
-    </b-card-text>
+    </v-card-text>
 
-    <b-button href="http://localhost:5000/login" variant="secondary">
-      <img src="https://img.icons8.com/color/16/000000/google-logo.png">
-      Sign-in Using Google
-    </b-button>
-  </b-card>
+    <v-btn href="http://localhost:5000/login" variant="secondary">
+      	<v-icon left>
+		  mdi-google
+		</v-icon>
+      	Sign-in Using Google
+    </v-btn>
+
+	<v-spacer />
+
+    <v-btn href="http://localhost:5000/login" variant="secondary">
+      	<v-icon left>
+		  mdi-facebook
+		</v-icon>
+      	Sign-in Using Facebook
+    </v-btn>
+  </v-card>
 </template>
 
 <script lang="ts">

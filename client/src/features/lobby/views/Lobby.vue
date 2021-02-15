@@ -1,29 +1,42 @@
 <template>
-	<b-container>
-		<b-row>
-			<b-col>
+	<v-container>
+		<v-row>
+			<v-col>
 				<p>Users</p>
-				<b-tabs content-class="mt-3">
-					<b-tab title="Online" active>
-						<b-list-group>
-							<b-list-group-item v-for="user in users" :key="user">
-								{{ user }}
-							</b-list-group-item>
-						</b-list-group>
-					</b-tab>
-					<b-tab title="Favourites">
+				<v-tabs>
+					<v-tabs-slider color="yellow"></v-tabs-slider>
+
+					<v-tab key="online">Online</v-tab>
+					<v-tab key="favs">Favourites</v-tab>
+				</v-tabs>
+
+				<v-tabs-items v-model="tab">
+					<v-tab-item key="online">
+						<v-list>
+							<v-list-item v-for="user in users" :key="user">
+								<v-list-item-avatar>
+									<v-img src="https://gravatar.com/avatar/c313637634df52bd6c729d6dce692b44?s=32&d=robohash&r=x"></v-img>
+								</v-list-item-avatar>
+								<v-list-item-content>
+									<v-list-item-title v-text="user"></v-list-item-title>
+								</v-list-item-content>
+							</v-list-item>
+						</v-list>
+					</v-tab-item>
+
+					<v-tab-item key="favs">
 						<p>No favourites</p>
-					</b-tab>
-				</b-tabs>
-			</b-col>
-			<b-col>
+					</v-tab-item>
+				</v-tabs-items>
+			</v-col>
+			<v-col>
 				<p>Your stats</p>
-			</b-col>
-			<b-col>
+			</v-col>
+			<v-col>
 				<p>Games in progress</p>
-			</b-col>
-		</b-row>
-	</b-container>
+			</v-col>
+		</v-row>
+	</v-container>
 </template>
 
 <script lang="ts">
