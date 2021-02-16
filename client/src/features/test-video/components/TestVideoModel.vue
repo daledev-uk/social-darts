@@ -114,16 +114,15 @@ import VueQrcode from "vue-qrcode";
 })
 export default class TestVideoModel extends Vue {
   public dialog = false;
-  public videoSource = "this";
+  public videoSource = 'this';
   public microphone = true;
   public camera = true;
   public cameraStarted = false;
   public mediaStream: MediaStream;
-  public externalUrl =
-    "http://localhost:6060/video-source/fewhfuhewuihfuewh435fuhewuifhuiewhf";
+  public externalUrl = process.env.VUE_APP_CLIENT_HOST + '/video-source/fewhfuhewuihfuewh435fuhewuifhuiewhf';
 
   public async startVideo() {
-    if (this.videoSource == "this") {
+    if (this.videoSource == 'this') {
       const videoDiv = this.$refs.testVideoDiv as HTMLDivElement;
       const video = document.createElement("video");
       video.style.width = "100%";

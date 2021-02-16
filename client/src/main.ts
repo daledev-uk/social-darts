@@ -5,12 +5,12 @@ import router from './router';
 import {store} from './store';
 import VueSocketIO from 'vue-socket.io';
 
-const API_SERVER_URL = process.env.VUE_APP_ROOT_API ? process.env.VUE_APP_ROOT_API : 'http://localhost:5000';
-
 Vue.config.productionTip = false;
 
+const sockerServerUrl = process.env.VUE_APP_API_HOST as string;
+
 Vue.use(new VueSocketIO({
-	connection: API_SERVER_URL,
+	connection: sockerServerUrl,
 	vuex: {
 		store,
 		actionPrefix: 'SOCKET_',
