@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import * as jwt from "jsonwebtoken";
+import { BaseRequest } from "../viewModels/requests/baseRequest";
 
 const SECRET_KEY = "SECRET123"; // Move to system property
 
@@ -16,6 +17,7 @@ class ApiAuthentication {
                 response.status(401).send("Invalid token");
                 response.end();
             } else {
+                (request.body as BaseRequest).userId = result;
                 next();
             }
         }

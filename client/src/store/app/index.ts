@@ -2,14 +2,17 @@ import { Module } from 'vuex';
 import { getters } from './getters';
 import { actions } from './actions';
 import { mutations } from './mutations';
+import { OnlineUser } from '../../../../server/src/viewModels/onlineUser';
 
 export interface AppState {
-	socketId: string;
+	loggedOnUser: OnlineUser;
+	onlineUsers: OnlineUser[]
 }
 
 // initial state
 export const appState: AppState = {
-	socketId: ''
+	loggedOnUser: {} as OnlineUser,
+	onlineUsers: []
 };
 
 export const app: Module<AppState, AppState> = {

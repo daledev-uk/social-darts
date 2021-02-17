@@ -4,19 +4,31 @@ import App from './App.vue';
 import router from './router';
 import {store} from './store';
 import VueSocketIO from 'vue-socket.io';
+import axios from 'axios';
+import { authentication } from './security/authentication';
 
 Vue.config.productionTip = false;
 
-const sockerServerUrl = process.env.VUE_APP_API_HOST as string;
+axios.interceptors.request.use(function(config) {
+    const token = authentication.getJwtToken();
+    if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+});
 
-Vue.use(new VueSocketIO({
-	connection: sockerServerUrl,
-	vuex: {
-		store,
-		actionPrefix: 'SOCKET_',
-		mutationPrefix: 'SOCKET_',
-	},
-}));
+if (authentication.isAuthenticated()) {
+	console.log('register socket');
+	const sockerServerUrl = process.env.VUE_APP_API_HOST as string;
+	Vue.use(new VueSocketIO({
+		connection: sockerServerUrl,
+		vuex: {
+			store,
+			actionPrefix: 'SOCKET_',
+			mutationPrefix: 'SOCKET_',
+		},
+	}));
+}
 
 const vueInstnace = new Vue({
 	router,

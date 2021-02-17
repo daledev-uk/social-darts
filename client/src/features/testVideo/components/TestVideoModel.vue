@@ -119,7 +119,7 @@ export default class TestVideoModel extends Vue {
   public camera = true;
   public cameraStarted = false;
   public mediaStream: MediaStream;
-  public externalUrl = process.env.VUE_APP_CLIENT_HOST + '/video-source/fewhfuhewuihfuewh435fuhewuifhuiewhf';
+  public externalUrl = /* process.env.VUE_APP_CLIENT_HOST + */ '/video-source/fewhfuhewuihfuewh435fuhewuifhuiewhf';
 
   public async startVideo() {
     if (this.videoSource == 'this') {

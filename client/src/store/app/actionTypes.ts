@@ -1,1 +1,1 @@
-
+export const LOAD_CONNECTED_USER = 'LOAD_CONNECTED_USER';

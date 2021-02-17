@@ -29,7 +29,7 @@ import { Component, Vue } from 'vue-property-decorator';
 import SocketIOClient from "socket.io-client";
 import { socketApi } from './services/socketService';
 import { peerApi } from './services/peerConnectionService';
-import TestVideoModel from './features/test-video/components/TestVideoModel.vue';
+import TestVideoModel from './features/testVideo/components/TestVideoModel.vue';
 
 @Component({
 	components: {

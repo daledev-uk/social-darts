@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import { app } from './app';
-import { lobby } from './lobby';
+import { lobby } from './screenShare';
 
 Vue.use(Vuex);
 

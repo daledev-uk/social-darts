@@ -28,6 +28,6 @@
 		"tests/**/*.ts",
 		"tests/**/*.tsx",
 		"store/store.ts"
-	],
+, "../server/src/security/viewModels/onlineUser.ts"	],
 	"exclude": ["node_modules", "typings"]
 }

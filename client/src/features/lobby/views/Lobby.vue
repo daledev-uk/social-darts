@@ -13,12 +13,12 @@
 				<v-tabs-items v-model="tab">
 					<v-tab-item key="online">
 						<v-list>
-							<v-list-item v-for="user in users" :key="user">
+							<v-list-item v-for="user in onlineUsers" :key="user.socketId">
 								<v-list-item-avatar>
-									<v-img src="https://gravatar.com/avatar/c313637634df52bd6c729d6dce692b44?s=32&d=robohash&r=x"></v-img>
+									<v-img :src="user.avatarUrl"></v-img>
 								</v-list-item-avatar>
 								<v-list-item-content>
-									<v-list-item-title v-text="user"></v-list-item-title>
+									<v-list-item-title v-text="user.displayName"></v-list-item-title>
 								</v-list-item-content>
 							</v-list-item>
 						</v-list>
@@ -46,6 +46,7 @@ import {peerApi} from '../../../services/peerConnectionService';
 import {socketApi} from '../../../services/socketService';
 import LocalVideo from '../components/LocalVideo.vue';
 import RemoteVideo from '../components/RemoteVideo.vue';
+import { OnlineUser } from '../../../../../server/src/viewModels/onlineUser';
 
 @Component({
 	components: {
@@ -54,7 +55,7 @@ import RemoteVideo from '../components/RemoteVideo.vue';
 	}
 })
 export default class Lobby extends Vue {
-	@Getter public users!: string[];
+	@Getter public onlineUsers!: OnlineUser[];
 	public selectedUser: string = '';
 	public tab = '';
 

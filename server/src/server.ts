@@ -4,6 +4,8 @@ import socketIO, { Server as SocketIOServer } from "socket.io";
 import { createServer, Server as HTTPServer } from "http";
 import {googleSecurity} from "./security/googleSecurity";
 import { apiAuthentication } from "./security/apiAuthentication";
+import { registerUser } from "./features/users/registerUser";
+import { socketManager } from "./features/onlineUsers/socketManager";
 
 export class Server {
     private httpServer: HTTPServer;
@@ -34,27 +36,13 @@ export class Server {
         app.get('/login', (req, res) => googleSecurity.login(req, res));
         app.get('/login/callback', (req, res) => googleSecurity.loginCallback(req, res));
 
-        app.get('/init', (req, res) => googleSecurity.loginCallback(req, res));
+        app.post('/users/register', (req, res) => registerUser.run(req, res));
     }
 
     private handleSocketConnection(): void {
         this.io.on("connection", socket => {
-            const existingSocket = this.activeSockets.find(
-                existingSocket => existingSocket === socket.id
-            );
-
-            if (!existingSocket) {
-                this.activeSockets.push(socket.id);
-
-                socket.emit("UPDATE_USER_LIST", {
-                    users: this.activeSockets.filter(
-                        existingSocket => existingSocket !== socket.id
-                    )
-                });
-
-                socket.broadcast.emit("UPDATE_USER_LIST", {
-                    users: [socket.id]
-                });
+            if (!socketManager.isSocketRegistered(socket)) {
+                socketManager.addSocket(socket);
             }
 
             socket.on("MEDIA_STREAM_OFFER", (data: any) => {

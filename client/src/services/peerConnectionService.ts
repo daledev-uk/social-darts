@@ -1,5 +1,5 @@
 import {store} from '@/store';
-import { ON_TRACK_ADDED_TO_PEER_CONNECTION } from '@/store/lobby/actionTypes';
+import { ON_TRACK_ADDED_TO_PEER_CONNECTION } from '@/store/screenShare/actionTypes';
 
 class PeerConnectionService {
 	private RTCPeerConnection: any;

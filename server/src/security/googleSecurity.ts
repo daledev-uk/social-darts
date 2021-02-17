@@ -3,7 +3,7 @@ import { OAuth2Client } from 'google-auth-library';
 import {google} from 'googleapis';
 import {createUser} from '../features/users/createUser';
 import { User } from '../features/users/models/user';
-import { LoginResponseViewModel } from './viewModels/loginResponseViewModel';
+import { LoginResponse } from '../viewModels/responses/loginResponse';
 import * as jwt from "jsonwebtoken";
 
 const keys = require('../config/google_client_secret.json');
@@ -30,7 +30,7 @@ class GoogleSecurity {
     }
 
     public async loginCallback(request: Request, response: Response) {
-        let responseContent: LoginResponseViewModel;
+        let responseContent: LoginResponse;
         try {
             const code = request.query.code as string;
             const oAuth2Client = new OAuth2Client(

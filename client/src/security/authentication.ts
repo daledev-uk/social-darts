@@ -12,6 +12,10 @@ class Authentication {
 		}
 	}
 
+	public isAuthenticated(): boolean {
+		return !!this.getJwtToken();
+	}
+
 	public getUser(): AuthenticatedUserViewModel {
 		const userJson = localStorage.getItem('user');
 		return userJson ? JSON.parse(userJson) : userJson;

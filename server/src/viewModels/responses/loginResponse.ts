@@ -1,6 +1,6 @@
 import { User } from "../../features/users/models/user";
 
-export interface LoginResponseViewModel {
+export interface LoginResponse {
     success: boolean;
     user?: User;
     token?: string;
