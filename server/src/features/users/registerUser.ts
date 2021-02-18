@@ -10,7 +10,7 @@ class RegisterUser {
         const user = await userRepo.get(request.userId);
         
         const onlineUser = { 
-            userId: user.email,
+            userId: user.id,
             socketId: request.socketId,
             displayName: user.displayName,
             avatar: user.profileImage

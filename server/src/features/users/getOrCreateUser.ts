@@ -1,11 +1,18 @@
 import { CreateUserRequest } from "./models/createUserRequest"
 import { User } from "./models/user";
 import {userRepo} from './userRepo';
+import { v4 as uuidv4 } from 'uuid';
 
-class CreateUser {
+class GetOrCreateUser {
     public async run(request: CreateUserRequest): Promise<User> {
-        console.log('Create User', request);
+        console.log('Get or create User', request);
+        const existingUser = await userRepo.getByEmail(request.email);
+        if (existingUser) {
+            return existingUser;
+        }
+        
         return userRepo.create({
+            id: uuidv4(),
             displayName: request.displayName,
             givenName: request.givenName,
             lastName: request.lastName,
@@ -19,4 +26,4 @@ class CreateUser {
     }
 }
 
-export const createUser = new CreateUser()
+export const getOrCreateUser = new GetOrCreateUser()

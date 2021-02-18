@@ -31,7 +31,7 @@ export class Server {
     }
 
     private setupRouting(app: express.Application) {
-        app.use(apiAuthentication.authenticate);
+        app.use((req, res, next) => apiAuthentication.authenticate(req, res, next));
     
         app.get('/login', (req, res) => googleSecurity.login(req, res));
         app.get('/login/callback', (req, res) => googleSecurity.loginCallback(req, res));
@@ -44,7 +44,7 @@ export class Server {
             if (!socketManager.isSocketRegistered(socket)) {
                 socketManager.addSocket(socket);
             }
-
+            
             socket.on("MEDIA_STREAM_OFFER", (data: any) => {
                 socket.to(data.to).emit("MEDIA_STREAM_OFFER", {
                     offer: data.offer,

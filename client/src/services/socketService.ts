@@ -1,10 +1,16 @@
-import Vue from "vue";
+import { store } from "@/store";
+import { LOAD_CONNECTED_USER } from "@/store/app/actionTypes";
 
 class SocketService {
 	private socket: SocketIOClient.Socket;
 
 	public init(socket: SocketIOClient.Socket) {
 		this.socket = socket;
+		if(this.socket.id) {
+			store.dispatch(LOAD_CONNECTED_USER, this.socket.id);
+		} else {
+			this.socket.on('connect', () => store.dispatch(LOAD_CONNECTED_USER, this.socket.id));
+		}
 	}
 
 	public async offerUserVideoShare(socketId: string, offer: RTCSessionDescriptionInit) {

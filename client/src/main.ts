@@ -20,14 +20,16 @@ axios.interceptors.request.use(function(config) {
 if (authentication.isAuthenticated()) {
 	console.log('register socket');
 	const sockerServerUrl = process.env.VUE_APP_API_HOST as string;
-	Vue.use(new VueSocketIO({
+	const socketInstance = new VueSocketIO({
 		connection: sockerServerUrl,
 		vuex: {
 			store,
 			actionPrefix: 'SOCKET_',
 			mutationPrefix: 'SOCKET_',
 		},
-	}));
+		debug: true
+	});
+	Vue.use(socketInstance);
 }
 
 const vueInstnace = new Vue({

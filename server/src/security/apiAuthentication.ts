@@ -1,11 +1,16 @@
 import { Request, Response } from "express";
 import * as jwt from "jsonwebtoken";
+import { User } from "../features/users/models/user";
 import { BaseRequest } from "../viewModels/requests/baseRequest";
 
 const SECRET_KEY = "SECRET123"; // Move to system property
 
 class ApiAuthentication {
 
+    public createJwt(user: User): string {
+        return jwt.sign(user, SECRET_KEY);
+    }
+    
     public async authenticate(request: Request, response: Response, next) {
         const requestedResource: string = request.originalUrl;
     
@@ -14,12 +19,13 @@ class ApiAuthentication {
         } else {
             const result = await this.validateJwt(request.headers.authorization);
             if (!result) {
-                response.status(401).send("Invalid token");
-                response.end();
-            } else {
-                (request.body as BaseRequest).userId = result;
-                next();
+                response.status(401).send('Invalid token');
+                return response.end();
             }
+            if (request.body) {
+                (request.body as BaseRequest).userId = result;
+            }
+            next();
         }
     }
 
@@ -44,7 +50,7 @@ class ApiAuthentication {
             try {
                 jwt.verify(token, SECRET_KEY, (err, payload: any) => {
                     if (!err) {
-                        resolve(payload.guid);
+                        resolve(payload.id);
                     } else {
                         reject("JWT could not be verified");
                     }

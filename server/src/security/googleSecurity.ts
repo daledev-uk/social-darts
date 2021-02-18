@@ -1,13 +1,12 @@
 import { Request, Response } from 'express';
 import { OAuth2Client } from 'google-auth-library';
 import {google} from 'googleapis';
-import {createUser} from '../features/users/createUser';
+import {getOrCreateUser} from '../features/users/getOrCreateUser';
 import { User } from '../features/users/models/user';
 import { LoginResponse } from '../viewModels/responses/loginResponse';
-import * as jwt from "jsonwebtoken";
+import { apiAuthentication } from './apiAuthentication';
 
 const keys = require('../config/google_client_secret.json');
-const SECRET_KEY = "SECRET123"; // Move to system property
 
 class GoogleSecurity {
 
@@ -43,7 +42,7 @@ class GoogleSecurity {
             oAuth2Client.setCredentials(tokenResponse.tokens);
 
             const userProfile = await this.getUserProfile(tokenResponse.tokens.access_token);
-            const user: User = await createUser.run({
+            const user: User = await getOrCreateUser.run({
                 givenName: userProfile.given_name,
                 lastName: userProfile.family_name,
                 displayName: userProfile.name,
@@ -54,7 +53,7 @@ class GoogleSecurity {
             responseContent = {
                 success: true,
                 user,
-                token: jwt.sign(user, SECRET_KEY)
+                token: apiAuthentication.createJwt(user)
             };
         } catch(err) {
             console.error('Failed to login: ', err);
