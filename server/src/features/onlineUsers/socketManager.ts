@@ -19,13 +19,19 @@ class SocketManager {
         this.usersByUserId[user.userId] = user;
         this.usersBySocketId[user.socketId] = user;
 
-        this.socketsBySocketId[user.socketId].broadcast.emit('NEW_USER_ONLINE', user);
+        if (this.socketsBySocketId[user.socketId]) {
+            this.socketsBySocketId[user.socketId].broadcast.emit('NEW_USER_ONLINE', user);
+        }        
     }
 
-    public removeUser(user: OnlineUser) {
-        delete this.usersByUserId[user.userId];
-        delete this.usersBySocketId[user.socketId];
-        delete this.socketsBySocketId[user.socketId];
+    public removeUser(socketId: string): OnlineUser {
+        const user = this.usersBySocketId[socketId];
+        if (user) {
+            delete this.usersByUserId[user.userId];
+        }        
+        delete this.usersBySocketId[socketId];
+        delete this.socketsBySocketId[socketId];
+        return user;
     }
 
     public getUserBySocketId(socketId: string): OnlineUser {

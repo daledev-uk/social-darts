@@ -82,15 +82,13 @@
           ></div>
 
           <v-card v-if="videoSource == 'external' && cameraStarted">
-            <v-card-title class="justify-center">Initate camera link</v-card-title>
+            <v-card-title class="justify-center"
+              >Initate camera link</v-card-title
+            >
 
-			<div class="text-center">
-				<vue-qrcode
-				:value="externalUrl"
-				width="300"				
-				color="dark"
-				/>
-			</div>
+            <div class="text-center">
+              <vue-qrcode :value="videoSourceInitateUrl" :width="300" />
+            </div>
 
             <v-card-text class="text-center">
               Scan the QR code with your mobile device or tablet to use that
@@ -106,6 +104,7 @@
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from "vue-property-decorator";
 import VueQrcode from "vue-qrcode";
+import { Getter } from "vuex-class";
 
 @Component({
   components: {
@@ -113,16 +112,16 @@ import VueQrcode from "vue-qrcode";
   },
 })
 export default class TestVideoModel extends Vue {
+  @Getter public videoSourceInitateUrl: string;
   public dialog = false;
-  public videoSource = 'this';
+  public videoSource = "this";
   public microphone = true;
   public camera = true;
   public cameraStarted = false;
   public mediaStream: MediaStream;
-  public externalUrl = /* process.env.VUE_APP_CLIENT_HOST + */ '/video-source/fewhfuhewuihfuewh435fuhewuifhuiewhf';
 
   public async startVideo() {
-    if (this.videoSource == 'this') {
+    if (this.videoSource == "this") {
       const videoDiv = this.$refs.testVideoDiv as HTMLDivElement;
       const video = document.createElement("video");
       video.style.width = "100%";

@@ -3,13 +3,14 @@ import Router, { Route } from 'vue-router';
 
 import Login from '@/features/login/views/Login.vue';
 import Lobby from '@/features/lobby/views/Lobby.vue';
+import VideoSource from '@/features/videoSource/views/VideoSource.vue';
 import { loginApi } from './services/api/loginApi';
 import { authentication } from './security/authentication';
 import { AuthenticatedUserViewModel } from './models/authenticatedUserViewModel';
 
 Vue.use(Router);
 
-const publicPages = ['/login', '/login/callback'];
+const publicPages = ['/login', '/login/callback', '/video-source'];
 
 const router = new Router({
 	mode: 'history',
@@ -28,6 +29,12 @@ const router = new Router({
 			path: '/',
 			name: 'lobby',
 			component: Lobby
+		},
+		{
+			path: '/video-source/:socketId',
+			name: 'videoSource',
+			props: true,
+			component: VideoSource
 		}
 	]
 });

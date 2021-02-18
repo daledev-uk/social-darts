@@ -3,7 +3,7 @@
 		<v-row>
 			<v-col>
 				<p>Users</p>
-				<v-tabs>
+				<v-tabs v-model="tab">
 					<v-tabs-slider color="yellow"></v-tabs-slider>
 
 					<v-tab key="online">Online</v-tab>
@@ -15,7 +15,7 @@
 						<v-list>
 							<v-list-item v-for="user in onlineUsers" :key="user.socketId">
 								<v-list-item-avatar>
-									<v-img :src="user.avatarUrl"></v-img>
+									<v-img :src="user.avatar"></v-img>
 								</v-list-item-avatar>
 								<v-list-item-content>
 									<v-list-item-title v-text="user.displayName"></v-list-item-title>
@@ -57,7 +57,7 @@ import { OnlineUser } from '../../../../../server/src/viewModels/onlineUser';
 export default class Lobby extends Vue {
 	@Getter public onlineUsers!: OnlineUser[];
 	public selectedUser: string = '';
-	public tab = '';
+	public tab = 'online';
 
 	public selectUser(userId: string) {
 		this.selectedUser = userId;

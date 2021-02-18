@@ -46,6 +46,13 @@ export class Server {
             if (!socketManager.isSocketRegistered(socket)) {
                 socketManager.addSocket(socket);
             }
+
+            socket.on("disconnect", () => {
+                const removedUser = socketManager.removeUser(socket.id);
+                if (removedUser) {
+                    socket.broadcast.emit("remove-user", removedUser);
+                }                
+            });
             
             socket.on("MEDIA_STREAM_OFFER", (data: any) => {
                 socket.to(data.to).emit("MEDIA_STREAM_OFFER", {
@@ -64,15 +71,6 @@ export class Server {
             socket.on("reject-call", data => {
                 socket.to(data.from).emit("call-rejected", {
                     socket: socket.id
-                });
-            });
-
-            socket.on("disconnect", () => {
-                this.activeSockets = this.activeSockets.filter(
-                    existingSocket => existingSocket !== socket.id
-                );
-                socket.broadcast.emit("remove-user", {
-                    socketId: socket.id
                 });
             });
         });
