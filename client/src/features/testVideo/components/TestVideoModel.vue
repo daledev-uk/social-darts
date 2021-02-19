@@ -104,7 +104,11 @@
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from "vue-property-decorator";
 import VueQrcode from "vue-qrcode";
-import { Getter } from "vuex-class";
+import { Getter, Action } from "vuex-class";
+import { CREATE_NEW_P2P_CONNECTION } from "../../../store/screenShare/actionTypes";
+import { P2PConnection } from "../../../store/screenShare/index";
+import { videoSourceApi } from '../../../services/api/videoSourceApi';
+import { OnlineUser } from "../../../../../server/src/viewModels/onlineUser";
 
 @Component({
   components: {
@@ -112,7 +116,10 @@ import { Getter } from "vuex-class";
   },
 })
 export default class TestVideoModel extends Vue {
-  @Getter public videoSourceInitateUrl: string;
+  @Action(CREATE_NEW_P2P_CONNECTION) public createNewP2pConnection: () => Promise<P2PConnection>;
+  @Getter loggedOnUser!: OnlineUser;
+
+  public videoSourceInitateUrl: string = '';
   public dialog = false;
   public videoSource = "this";
   public microphone = true;
@@ -150,9 +157,11 @@ export default class TestVideoModel extends Vue {
     this.cameraStarted = false;
   }
 
-  public createQrCode() {
-    this.cameraStarted = true;
-  }
+    public async createQrCode() {
+        var p2pConnection = await this.createNewP2pConnection();
+        this.videoSourceInitateUrl = await videoSourceApi.createLink(this.loggedOnUser.socketId, JSON.stringify(p2pConnection.offer))
+        this.cameraStarted = true;
+    }
 }
 </script>
 

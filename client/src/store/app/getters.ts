@@ -3,4 +3,5 @@ import { AppState } from '.';
 
 export const getters: GetterTree<AppState, AppState> = {
     onlineUsers: (state) => state.onlineUsers,
+    loggedOnUser: (state) => state.loggedOnUser,
 };

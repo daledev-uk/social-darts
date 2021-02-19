@@ -7,12 +7,24 @@ class PeerConnectionService {
 
 	private peerConnection: RTCPeerConnection;
 
-	public createPeerConnection(window: any) {
+	public setup(window: any) {
 		this.RTCPeerConnection = window.RTCPeerConnection;
 		this.RTCSessionDescription = window.RTCSessionDescription;
-		this.peerConnection = new RTCPeerConnection();
+	}
 
+	public createPeerConnection() {
+		this.peerConnection = new RTCPeerConnection();
 		this.peerConnection.ontrack = ({ streams: [stream] }) => this.ontrack(stream);
+	}
+
+	public createNewConnection(): RTCPeerConnection {
+		return new RTCPeerConnection();
+	}
+
+	public async createOfferOfConnection(connection: RTCPeerConnection): Promise<RTCSessionDescriptionInit> {
+		const offer = await connection.createOffer();
+		await connection.setLocalDescription(new RTCSessionDescription(offer));
+		return offer;
 	}
 
 	public addMediaStream(mediaStream: MediaStream) {

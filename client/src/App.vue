@@ -38,7 +38,7 @@ import TestVideoModel from './features/testVideo/components/TestVideoModel.vue';
 })
 export default class App extends Vue {
   public created() {
-	peerApi.createPeerConnection(window);
+	peerApi.setup(window);
 	socketApi.init((this as any).$socket as SocketIOClient.Socket);
   }
 }

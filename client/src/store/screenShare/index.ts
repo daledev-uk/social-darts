@@ -4,20 +4,28 @@ import { getters } from './getters';
 import { actions } from './actions';
 import { mutations } from './mutations';
 
-export interface LobbyState {
+export interface ScreenShareState {
+	connections: { [connectionId: string] : P2PConnection },
 	users: string[];
 	remoteMediaStream?: MediaStream;
 }
 
-export const appUserState: LobbyState = {
+export const screenShareState: ScreenShareState = {
+	connections: {},
 	users: [],
 	remoteMediaStream: undefined
 };
 
-export const lobby: Module<LobbyState, AppState> = {
+export const lobby: Module<ScreenShareState, AppState> = {
 	namespaced: false,
-	state: appUserState,
+	state: screenShareState,
 	getters,
 	actions,
 	mutations
 };
+
+export interface P2PConnection {
+	id: string,
+	connection: RTCPeerConnection,
+	offer: RTCSessionDescriptionInit
+}

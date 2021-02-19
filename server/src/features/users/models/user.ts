@@ -1,5 +1,6 @@
-export interface User {
-    id: string,
+import { BaseRecord } from "../../../repository/baseRecord";
+
+export interface User extends BaseRecord {
     givenName: string;
     lastName: string;
     displayName: string;
