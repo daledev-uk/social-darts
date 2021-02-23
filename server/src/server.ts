@@ -6,7 +6,7 @@ import {googleSecurity} from "./security/googleSecurity";
 import { apiAuthentication } from "./security/apiAuthentication";
 import { registerUser } from "./features/users/registerUser";
 import { socketManager } from "./features/onlineUsers/socketManager";
-import { generateVideoSourceUrl } from "./features/videoSource/generateVideoSourceUrl";
+import { videoSourceController } from "./features/videoSource/videoSourceController";
 
 export class Server {
     private httpServer: HTTPServer;
@@ -41,7 +41,8 @@ export class Server {
 
         app.post('/users/register', (req, res) => registerUser.run(req, res));
 
-        app.post('/video-source', (req, res) => generateVideoSourceUrl.run(req, res));
+        app.post('/video-source', (req, res) => videoSourceController.create(req, res));
+        app.get('/video-source/:id', (req, res) => videoSourceController.get(req, res));
     }
 
     private handleSocketConnection(): void {

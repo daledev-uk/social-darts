@@ -1,5 +1,5 @@
 export interface BaseRecord {
     id: string
-    createdDateUtc?: number;
-    lastUpdatedUtc?: number;
+    createdDateUtc?: string;
+    lastUpdatedUtc?: string;
 }

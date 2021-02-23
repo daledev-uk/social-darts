@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    Socket ID : {{ socketId }}
+    Share ID : {{ socketId }}
 	<br />
     <LocalVideo />
   </v-container>
@@ -8,6 +8,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from "vue-property-decorator";
+import { videoSourceApi } from "../../../services/api/videoSourceApi";
 import LocalVideo from "../../lobby/components/LocalVideo.vue";
 
 @Component({
@@ -17,6 +18,13 @@ import LocalVideo from "../../lobby/components/LocalVideo.vue";
 })
 export default class VideoSource extends Vue {
   @Prop() public socketId!: string;
+
+  public async created() {
+      const videoSource = await videoSourceApi.get(this.socketId);
+      console.log('videoSource', videoSource);
+      const offer: RTCSessionDescriptionInit = JSON.parse(videoSource.offer);
+      console.log('offer', offer);
+  }
 }
 </script>
 

@@ -10,7 +10,7 @@ import { AuthenticatedUserViewModel } from './models/authenticatedUserViewModel'
 
 Vue.use(Router);
 
-const publicPages = ['/login', '/login/callback', '/video-source'];
+const publicPages = ['/login', '/login/callback', '/video-source/*'];
 
 const router = new Router({
 	mode: 'history',
@@ -42,11 +42,11 @@ const router = new Router({
 
 
 router.beforeEach(async (to: Route, from: Route, next: (target?: string) => void) => {
-	const authRequired = !publicPages.includes(to.path);
+	const authRequired = !publicPages.includes(to.path) && !to.path.startsWith('/video-source/');
 	const authToken = authentication.getJwtToken();
 	console.log('to: ', to.path, 'authRequired: ', authRequired, 'authToken: ', authToken);
 
- if (authRequired && !authToken) {
+    if (authRequired && !authToken) {
 		return next('/login');
 	}
 

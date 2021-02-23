@@ -24,7 +24,7 @@ export abstract class BaseUserRepo<T extends BaseRecord> {
     }
 
     public async create(item: T): Promise<T> {
-        item.createdDateUtc = new Date().getUTCDate();
+        item.createdDateUtc = new Date().toISOString();
         item.lastUpdatedUtc = item.createdDateUtc;
         const doc = this.collection.doc(item.id);        
         const result = await doc.set(item);

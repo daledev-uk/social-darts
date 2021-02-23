@@ -13,8 +13,9 @@ class ApiAuthentication {
     
     public async authenticate(request: Request, response: Response, next) {
         const requestedResource: string = request.originalUrl;
+        const method = request.method.toLowerCase();
     
-        if (requestedResource.startsWith('/login')) {
+        if (requestedResource.startsWith('/login') || (requestedResource.startsWith('/video-source/') && method === 'get')) {
             next();
         } else {
             const result = await this.validateJwt(request.headers.authorization);
