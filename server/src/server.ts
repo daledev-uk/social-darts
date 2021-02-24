@@ -72,9 +72,10 @@ export class Server {
                 });
             });
 
-            socket.on("reject-call", data => {
-                socket.to(data.from).emit("call-rejected", {
-                    socket: socket.id
+            socket.on("CONFIRM_VIDEO_SOURCE", data => {
+                socket.to(data.to).emit("VIDEO_SOURCE_CONFIRMED", {
+                    videoSourceId: data.videoSourceId,
+                    videoSourceSocketId: data.from
                 });
             });
         });

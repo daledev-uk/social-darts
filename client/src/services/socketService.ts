@@ -1,3 +1,4 @@
+import { authentication } from "@/security/authentication";
 import { store } from "@/store";
 import { LOAD_CONNECTED_USER } from "@/store/app/actionTypes";
 
@@ -7,9 +8,9 @@ class SocketService {
 	public init(socket: SocketIOClient.Socket) {
 		this.socket = socket;
 		if(this.socket.id) {
-			store.dispatch(LOAD_CONNECTED_USER, this.socket.id);
+			this.onSocketConnected();
 		} else {
-			this.socket.on('connect', () => store.dispatch(LOAD_CONNECTED_USER, this.socket.id));
+			this.socket.on('connect', () => this.onSocketConnected());
 		}
 	}
 
@@ -26,6 +27,20 @@ class SocketService {
 			to: socketId
 		});
 	}
+
+    public confirmVideoForSource(to: string, videoSourceId: string) {
+        this.socket.emit("CONFIRM_VIDEO_SOURCE", {			
+			to,
+            from: this.socket.id,
+            videoSourceId
+		});
+    }
+
+    private onSocketConnected() {
+        if (authentication.isAuthenticated()) {
+            store.dispatch(LOAD_CONNECTED_USER, this.socket.id);
+        }
+    }
 }
 
 export const socketApi = new SocketService();

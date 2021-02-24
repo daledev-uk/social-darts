@@ -39,7 +39,7 @@ class SocketManager {
     }
 
     public getAllUsers(): OnlineUser[] {
-        return Object.values(this.usersByUserId);
+        return Object.values(this.usersByUserId).filter(usr => !!usr.userId);
     }
 }
 

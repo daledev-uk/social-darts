@@ -24,6 +24,9 @@ class VideoSourceController {
         const videoSourceId = httpRequest.params.id;
         
         const urlRecord = await videoSourceRepo.get(videoSourceId);
+        if (!urlRecord) {
+            return response.status(404).end();
+        }
 
         const urlResponse: VideoSourceResponse = {
             id: urlRecord.id,

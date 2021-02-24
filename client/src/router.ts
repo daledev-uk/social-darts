@@ -31,7 +31,7 @@ const router = new Router({
 			component: Lobby
 		},
 		{
-			path: '/video-source/:socketId',
+			path: '/video-source/:videoSourceId',
 			name: 'videoSource',
 			props: true,
 			component: VideoSource
@@ -44,7 +44,6 @@ const router = new Router({
 router.beforeEach(async (to: Route, from: Route, next: (target?: string) => void) => {
 	const authRequired = !publicPages.includes(to.path) && !to.path.startsWith('/video-source/');
 	const authToken = authentication.getJwtToken();
-	console.log('to: ', to.path, 'authRequired: ', authRequired, 'authToken: ', authToken);
 
     if (authRequired && !authToken) {
 		return next('/login');

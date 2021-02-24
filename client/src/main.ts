@@ -17,7 +17,7 @@ axios.interceptors.request.use(function(config) {
     return config;
 });
 
-if (authentication.isAuthenticated()) {
+if (authentication.isAuthenticated() || window.location.pathname.startsWith('/video-source/')) {
 	console.log('register socket');
 	const sockerServerUrl = process.env.VUE_APP_API_HOST as string;
 	const socketInstance = new VueSocketIO({
@@ -26,8 +26,7 @@ if (authentication.isAuthenticated()) {
 			store,
 			actionPrefix: 'SOCKET_',
 			mutationPrefix: 'SOCKET_',
-		},
-		debug: true
+		}
 	});
 	Vue.use(socketInstance);
 }
