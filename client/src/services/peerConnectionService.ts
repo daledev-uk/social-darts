@@ -27,6 +27,10 @@ class PeerConnectionService {
 		return offer;
 	}
 
+	public attachOfferToConnection(p2pConn: RTCPeerConnection, remoteOffer: RTCSessionDescriptionInit): Promise<void> {
+		return p2pConn.setRemoteDescription(new RTCSessionDescription(remoteOffer));
+	}
+
 	public addMediaStream(mediaStream: MediaStream) {
 		mediaStream.getTracks().forEach(track => this.peerConnection.addTrack(track, mediaStream));
 	}

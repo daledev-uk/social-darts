@@ -1,7 +1,7 @@
 import { ActionTree } from 'vuex';
 import { P2PConnection, ScreenShareState } from '.';
 import { AppState } from '@/store/app';
-import { MEDIA_STREAM_OFFER, MEDIA_STREAM_ACCEPTED, ON_TRACK_ADDED_TO_PEER_CONNECTION, GET_VIDEO_SOURCE_INITIATE_URL, CREATE_NEW_P2P_CONNECTION, P2P_CONNECTION_TRACK_RECIEVED } from './actionTypes';
+import { MEDIA_STREAM_OFFER, MEDIA_STREAM_ACCEPTED, ON_TRACK_ADDED_TO_PEER_CONNECTION, CREATE_NEW_P2P_CONNECTION, P2P_CONNECTION_TRACK_RECIEVED } from './actionTypes';
 import { peerApi } from '../../services/peerConnectionService';
 import { socketApi } from '../../services/socketService';
 import { SET_REMOTE_MEDIA_STREAM } from './mutationTypes';
@@ -26,11 +26,6 @@ export const actions: ActionTree<ScreenShareState, AppState> = {
 
 	[P2P_CONNECTION_TRACK_RECIEVED]({ commit }, { p2pConnection, stream }) {
 		console.log(P2P_CONNECTION_TRACK_RECIEVED, p2pConnection, stream);
-	},
-
-	[GET_VIDEO_SOURCE_INITIATE_URL]({ rootState }) {
-		const appState = (rootState as any).app as AppState;
-		return `${process.env.VUE_APP_CLIENT_HOST}/video-source/${appState.loggedOnUser.socketId}`;
 	},
 
 	async [MEDIA_STREAM_OFFER](state, data: any) {

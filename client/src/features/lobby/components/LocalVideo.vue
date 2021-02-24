@@ -4,7 +4,6 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { peerApi } from "../../../services/peerConnectionService";
 
 @Component
 export default class LocalVideo extends Vue {
@@ -15,15 +14,16 @@ export default class LocalVideo extends Vue {
       const mediaStream: MediaStream = await navigator.mediaDevices.getUserMedia(
         { audio: true, video: true }
       );
+	  this.$emit('mediastreamstart', mediaStream);
 
       const localVideo = this.$refs.localVidElement as HTMLVideoElement;
       if (localVideo) {
         localVideo.srcObject = mediaStream;
       }
 
-      peerApi.addMediaStream(mediaStream);
     } catch (err) {
       this.error = true;
+	  this.$emit('mediastreamstarterror', err);
       console.warn(err.message);
     }
   }
