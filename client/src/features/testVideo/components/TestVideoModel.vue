@@ -87,7 +87,8 @@
             >
 
             <div class="text-center">
-              <vue-qrcode :value="videoSourceInitateUrl" :width="300" />
+              <vue-qrcode v-if="!p2pConnection.receivedResponse" :value="videoSourceInitateUrl" :width="300" />
+              <RemoteVideo v-else />
             </div>
 
             <v-card-text class="text-center">
@@ -107,20 +108,23 @@ import VueQrcode from "vue-qrcode";
 import { Getter, Action } from "vuex-class";
 import { CREATE_NEW_P2P_CONNECTION } from "../../../store/screenShare/actionTypes";
 import { P2PConnection } from "../../../store/screenShare/index";
-import { videoSourceApi } from '../../../services/api/videoSourceApi';
+import { videoSourceApi } from "../../../services/api/videoSourceApi";
 import { OnlineUser } from "../../../../../server/src/viewModels/onlineUser";
+import RemoteVideo from "@/features/lobby/components/RemoteVideo.vue";
 
 @Component({
   components: {
     VueQrcode,
+    RemoteVideo,
   },
 })
 export default class TestVideoModel extends Vue {
-  @Action(CREATE_NEW_P2P_CONNECTION) public createNewP2pConnection: () => Promise<P2PConnection>;
+  @Action(CREATE_NEW_P2P_CONNECTION)
+  public createNewP2pConnection: () => Promise<P2PConnection>;
   @Getter public loggedOnUser!: OnlineUser;
-  @Getter public connections!: { [connectionId: string] : P2PConnection };
+  @Getter public connections!: { [connectionId: string]: P2PConnection };
 
-  public videoSourceInitateUrl: string = '';
+  public videoSourceInitateUrl: string = "";
   public dialog = false;
   public videoSource = "this";
   public microphone = true;
@@ -129,9 +133,9 @@ export default class TestVideoModel extends Vue {
   public mediaStream: MediaStream;
   public p2pConnection: P2PConnection;
 
-  @Watch('connections', { immediate: true })
+  @Watch("connections", { immediate: true })
   public onConnectionsUpdate() {
-	  console.log('connections updated');
+    console.log("connections updated");
   }
 
   public async startVideo() {
@@ -164,11 +168,15 @@ export default class TestVideoModel extends Vue {
     this.cameraStarted = false;
   }
 
-    public async createQrCode() {
-        this.p2pConnection = await this.createNewP2pConnection();
-        this.videoSourceInitateUrl = await videoSourceApi.createLink(this.loggedOnUser.socketId, this.p2pConnection.id, JSON.stringify(this.p2pConnection.offer))
-        this.cameraStarted = true;
-    }
+  public async createQrCode() {
+    this.p2pConnection = await this.createNewP2pConnection();
+    this.videoSourceInitateUrl = await videoSourceApi.createLink(
+      this.loggedOnUser.socketId,
+      this.p2pConnection.id,
+      JSON.stringify(this.p2pConnection.offer)
+    );
+    this.cameraStarted = true;
+  }
 }
 </script>
 

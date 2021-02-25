@@ -10,6 +10,11 @@ class SocketManager {
         return !!this.socketsBySocketId[socket.id];
     }
 
+    public getSocketByUserId(userId: string): Socket {
+        const user = this.usersByUserId[userId];
+        return this.socketsBySocketId[user?.socketId];
+    }
+
     public addSocket(socket: Socket) {
         this.socketsBySocketId[socket.id] = socket;
         this.usersBySocketId[socket.id] = { socketId: socket.id } as OnlineUser;

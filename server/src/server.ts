@@ -13,8 +13,6 @@ export class Server {
     private app: Application;
     private io: SocketIOServer;
 
-    private activeSockets: string[] = [];
-
     private readonly DEFAULT_PORT = 5000;
 
     constructor() {
@@ -77,7 +75,14 @@ export class Server {
             });
 
             socket.on("CONFIRM_VIDEO_SOURCE", data => {
-                socket.to(data.to).emit("VIDEO_SOURCE_CONFIRMED", {
+                const receiptientSocket = socketManager.getSocketByUserId(data.userId);
+                const to = socket.to(data.to);
+                receiptientSocket?.emit("VIDEO_SOURCE_CONFIRMED", {
+                    videoSourceId: data.videoSourceId,
+                    videoSourceSocketId: data.from
+                });
+
+                to?.emit("VIDEO_SOURCE_CONFIRMED", {
                     videoSourceId: data.videoSourceId,
                     videoSourceSocketId: data.from
                 });

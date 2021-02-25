@@ -10,6 +10,10 @@ class VideoSourceController {
     public async create(httpRequest: Request, response: Response) {
         const request = httpRequest.body as CreateVideoSourceUrlRequest;
         
+        if (!request?.p2pId) {
+            return response.status(400).end();
+        }
+
         const urlRecord = await videoSourceRepo.create({
             id: request.p2pId,
             userId: request.userId,

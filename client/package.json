@@ -34,6 +34,7 @@
 		"@types/socket.io": "2.1.13",
 		"@types/socket.io-client": "1.4.35",
 		"@types/url-join": "^4.0.0",
+		"@types/uuid": "3.4.3",
 		"@types/qrcode": "^1.4.0",
 		"@vue/cli-plugin-babel": "^3.5.0",
 		"@vue/cli-plugin-typescript": "^3.5.0",

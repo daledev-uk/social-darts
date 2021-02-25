@@ -28,9 +28,10 @@ class SocketService {
 		});
 	}
 
-    public confirmVideoForSource(to: string, videoSourceId: string) {
+    public confirmVideoForSource(to: string, userId: string, videoSourceId: string) {
         this.socket.emit('CONFIRM_VIDEO_SOURCE', {			
 			to,
+            userId,
             from: this.socket.id,
             videoSourceId
 		});

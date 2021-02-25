@@ -1,18 +1,21 @@
 import { MutationTree } from 'vuex';
 import { P2PConnection, ScreenShareState } from '.';
-import { ADD_P2P_CONNECTION, SET_P2P_RECIEVED, SET_REMOTE_MEDIA_STREAM, UPDATE_USER_LIST } from './mutationTypes';
+import { ADD_P2P_CONNECTION, ADD_TRACK_TO_P2P_CONNECTION, SET_P2P_RECIEVED, SET_REMOTE_MEDIA_STREAM, UPDATE_USER_LIST } from './mutationTypes';
 
 export const mutations: MutationTree<ScreenShareState> = {
 
 	[UPDATE_USER_LIST](state, updateUserListPayload: any) {
-		console.log(UPDATE_USER_LIST, updateUserListPayload);
 		state.users.push(...updateUserListPayload.users);
 	},
 
 	[ADD_P2P_CONNECTION](state, p2pConnection: P2PConnection) {
-		console.log(ADD_P2P_CONNECTION, p2pConnection);
 		state.connections[p2pConnection.id] = p2pConnection;
 	},
+
+    [ADD_TRACK_TO_P2P_CONNECTION](state, { connectionId, stream }) {
+        console.log('ADD_TRACK_TO_P2P_CONNECTION', stream);
+        state.connections[connectionId].streams.push(stream);
+    },
 
 	[SET_P2P_RECIEVED](state, p2pId: string) {
 		console.log(SET_P2P_RECIEVED, p2pId);

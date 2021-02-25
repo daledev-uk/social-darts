@@ -28,5 +28,6 @@ export interface P2PConnection {
 	id: string,
 	connection: RTCPeerConnection,
 	offer: RTCSessionDescriptionInit,
-	receivedResponse: boolean
+	receivedResponse: boolean,
+    streams: MediaStream[]
 }
