@@ -1,10 +1,17 @@
 import { ActionTree } from 'vuex';
 import { P2PConnection, ScreenShareState } from '.';
 import { AppState } from '@/store/app';
-import { MEDIA_STREAM_OFFER, MEDIA_STREAM_ACCEPTED, ON_TRACK_ADDED_TO_PEER_CONNECTION, CREATE_NEW_P2P_CONNECTION, P2P_CONNECTION_TRACK_RECIEVED, VIDEO_SOURCE_CONFIRMED } from './actionTypes';
+import { 
+	MEDIA_STREAM_OFFER, 
+	MEDIA_STREAM_ACCEPTED, 
+	ON_TRACK_ADDED_TO_PEER_CONNECTION, 
+	CREATE_NEW_P2P_CONNECTION, 
+	P2P_CONNECTION_TRACK_RECIEVED, 
+	VIDEO_SOURCE_CONFIRMED
+} from './actionTypes';
 import { peerApi } from '../../services/peerConnectionService';
 import { socketApi } from '../../services/socketService';
-import { SET_REMOTE_MEDIA_STREAM } from './mutationTypes';
+import { ADD_P2P_CONNECTION, SET_P2P_RECIEVED, SET_REMOTE_MEDIA_STREAM } from './mutationTypes';
 import { v4 as uuidv4 } from 'uuid';
 
 export const actions: ActionTree<ScreenShareState, AppState> = {
@@ -17,10 +24,11 @@ export const actions: ActionTree<ScreenShareState, AppState> = {
 		const p2pConnection: P2PConnection = {
 			id: connectionId,
 			connection,
-			offer
+			offer,
+			receivedResponse: false
 		}
 		connection.ontrack = ({ streams: [stream] }) => dispatch(P2P_CONNECTION_TRACK_RECIEVED, { p2pConnection, stream });
-
+		commit(ADD_P2P_CONNECTION, p2pConnection);
 		return p2pConnection;
 	},
 
@@ -45,8 +53,9 @@ export const actions: ActionTree<ScreenShareState, AppState> = {
 		await peerApi.setupRemotePeerFromAnswer(data.answer);
 	},
 
-    [VIDEO_SOURCE_CONFIRMED](state, data: any) {
+    [VIDEO_SOURCE_CONFIRMED]({ commit }, data: any) {
         console.log(VIDEO_SOURCE_CONFIRMED, data);
+		commit(SET_P2P_RECIEVED, data.videoSourceId);
     },
 
 	[ON_TRACK_ADDED_TO_PEER_CONNECTION]({ commit }, stream: MediaStream) {

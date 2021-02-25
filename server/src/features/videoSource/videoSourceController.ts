@@ -11,7 +11,8 @@ class VideoSourceController {
         const request = httpRequest.body as CreateVideoSourceUrlRequest;
         
         const urlRecord = await videoSourceRepo.create({
-            id: uuidv4(),
+            id: request.p2pId,
+            userId: request.userId,
             socketId: request.socketId,
             offer: request.offer
         });
@@ -31,6 +32,7 @@ class VideoSourceController {
         const urlResponse: VideoSourceResponse = {
             id: urlRecord.id,
             socketId: urlRecord.socketId,
+            userId: urlRecord.userId,
             offer: urlRecord.offer
         }; 
         response.end(JSON.stringify(urlResponse));

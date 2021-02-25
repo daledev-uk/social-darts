@@ -27,5 +27,6 @@ export const lobby: Module<ScreenShareState, AppState> = {
 export interface P2PConnection {
 	id: string,
 	connection: RTCPeerConnection,
-	offer: RTCSessionDescriptionInit
+	offer: RTCSessionDescriptionInit,
+	receivedResponse: boolean
 }

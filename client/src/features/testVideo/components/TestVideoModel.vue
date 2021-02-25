@@ -117,7 +117,8 @@ import { OnlineUser } from "../../../../../server/src/viewModels/onlineUser";
 })
 export default class TestVideoModel extends Vue {
   @Action(CREATE_NEW_P2P_CONNECTION) public createNewP2pConnection: () => Promise<P2PConnection>;
-  @Getter loggedOnUser!: OnlineUser;
+  @Getter public loggedOnUser!: OnlineUser;
+  @Getter public connections!: { [connectionId: string] : P2PConnection };
 
   public videoSourceInitateUrl: string = '';
   public dialog = false;
@@ -126,6 +127,12 @@ export default class TestVideoModel extends Vue {
   public camera = true;
   public cameraStarted = false;
   public mediaStream: MediaStream;
+  public p2pConnection: P2PConnection;
+
+  @Watch('connections', { immediate: true })
+  public onConnectionsUpdate() {
+	  console.log('connections updated');
+  }
 
   public async startVideo() {
     if (this.videoSource == "this") {
@@ -158,8 +165,8 @@ export default class TestVideoModel extends Vue {
   }
 
     public async createQrCode() {
-        var p2pConnection = await this.createNewP2pConnection();
-        this.videoSourceInitateUrl = await videoSourceApi.createLink(this.loggedOnUser.socketId, JSON.stringify(p2pConnection.offer))
+        this.p2pConnection = await this.createNewP2pConnection();
+        this.videoSourceInitateUrl = await videoSourceApi.createLink(this.loggedOnUser.socketId, this.p2pConnection.id, JSON.stringify(this.p2pConnection.offer))
         this.cameraStarted = true;
     }
 }

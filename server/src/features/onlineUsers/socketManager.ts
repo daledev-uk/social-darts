@@ -3,8 +3,8 @@ import { Socket } from "socket.io";
 
 class SocketManager {
     private usersByUserId: { [userId: string]: OnlineUser } = {};
-    private usersBySocketId: { [userId: string]: OnlineUser } = {};
-    private socketsBySocketId: { [userId: string]: Socket } = {};
+    private usersBySocketId: { [socketId: string]: OnlineUser } = {};
+    private socketsBySocketId: { [socketId: string]: Socket } = {};
 
     public isSocketRegistered(socket: Socket): boolean {
         return !!this.socketsBySocketId[socket.id];
@@ -24,10 +24,16 @@ class SocketManager {
         }        
     }
 
+    public linkSocketToUser(socketId: string, userId: string) {
+        const user = this.usersByUserId[userId] ?? {} as OnlineUser;
+        user.socketId = socketId;
+        this.usersByUserId[userId] = user;
+    }
+
     public removeUser(socketId: string): OnlineUser {
         const user = this.usersBySocketId[socketId];
         if (user) {
-            delete this.usersByUserId[user.userId];
+            user.socketId = null;
         }        
         delete this.usersBySocketId[socketId];
         delete this.socketsBySocketId[socketId];
@@ -39,7 +45,7 @@ class SocketManager {
     }
 
     public getAllUsers(): OnlineUser[] {
-        return Object.values(this.usersByUserId).filter(usr => !!usr.userId);
+        return Object.values(this.usersByUserId).filter(usr => !!usr.userId && !!usr.socketId);
     }
 }
 

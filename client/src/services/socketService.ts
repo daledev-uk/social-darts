@@ -15,21 +15,21 @@ class SocketService {
 	}
 
 	public async offerUserVideoShare(socketId: string, offer: RTCSessionDescriptionInit) {
-		this.socket.emit("MEDIA_STREAM_OFFER", {
+		this.socket.emit('MEDIA_STREAM_OFFER', {
 			offer,
 			to: socketId
 		});
 	}
 
 	public acceptMediaStreamShare(answer: RTCSessionDescriptionInit, socketId: string) {
-		this.socket.emit("ACCEPTED_STREAM_OFFER", {
+		this.socket.emit('ACCEPTED_STREAM_OFFER', {
 			answer,
 			to: socketId
 		});
 	}
 
     public confirmVideoForSource(to: string, videoSourceId: string) {
-        this.socket.emit("CONFIRM_VIDEO_SOURCE", {			
+        this.socket.emit('CONFIRM_VIDEO_SOURCE', {			
 			to,
             from: this.socket.id,
             videoSourceId
@@ -38,6 +38,7 @@ class SocketService {
 
     private onSocketConnected() {
         if (authentication.isAuthenticated()) {
+			this.socket.emit('IDENTIFY', authentication.getUserId());
             store.dispatch(LOAD_CONNECTED_USER, this.socket.id);
         }
     }

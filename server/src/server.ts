@@ -57,6 +57,10 @@ export class Server {
                     socket.broadcast.emit("remove-user", removedUser);
                 }                
             });
+
+            socket.on("IDENTIFY", (userId: string) => {
+                socketManager.linkSocketToUser(socket.id, userId);
+            });
             
             socket.on("MEDIA_STREAM_OFFER", (data: any) => {
                 socket.to(data.to).emit("MEDIA_STREAM_OFFER", {
