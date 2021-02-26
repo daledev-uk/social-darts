@@ -31,6 +31,16 @@
 			</v-col>
 			<v-col>
 				<p>Your stats</p>
+				<table>
+					<tr>
+						<td>Name: </td>
+						<td>{{ displayName }}</td>
+					</tr>
+										<tr>
+						<td>SocketId: </td>
+						<td>{{ socketId }}</td>
+					</tr>
+				</table>
 			</v-col>
 			<v-col>
 				<p>Games in progress</p>
@@ -56,8 +66,18 @@ import { OnlineUser } from '../../../../../server/src/viewModels/onlineUser';
 })
 export default class Lobby extends Vue {
 	@Getter public onlineUsers!: OnlineUser[];
+	@Getter public loggedOnUser!: OnlineUser;
+
 	public selectedUser: string = '';
 	public tab = 'online';
+
+	public get displayName() {
+		return this.loggedOnUser.displayName;
+	}
+
+	public get socketId() {
+		return this.loggedOnUser.socketId;
+	}
 
 	public selectUser(userId: string) {
 		this.selectedUser = userId;

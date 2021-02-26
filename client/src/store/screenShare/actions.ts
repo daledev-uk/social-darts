@@ -32,10 +32,10 @@ export const actions: ActionTree<ScreenShareState, AppState> = {
 		return p2pConnection;
 	},
 
-	async [MEDIA_STREAM_OFFER](state, data: any) {
-		const answer = await peerApi.setupPeerToPeerConnection(data.offer);
-		socketApi.acceptMediaStreamShare(answer, data.socket);
-	},
+	async [VIDEO_SOURCE_CONFIRMED]({ state, commit }, data: any) {
+		await peerApi.attachAnswerToConnection(state.connections[data.videoSourceId].connection, data.answer);
+		commit(SET_P2P_RECIEVED, data.videoSourceId);
+    },
 
 	async [MEDIA_STREAM_OFFER](state, data: any) {
 		const answer = await peerApi.setupPeerToPeerConnection(data.offer);
@@ -45,10 +45,6 @@ export const actions: ActionTree<ScreenShareState, AppState> = {
 	async [MEDIA_STREAM_ACCEPTED](state, data: any) {
 		await peerApi.setupRemotePeerFromAnswer(data.answer);
 	},
-
-    [VIDEO_SOURCE_CONFIRMED]({ commit }, data: any) {
-		commit(SET_P2P_RECIEVED, data.videoSourceId);
-    },
 
 	[ON_TRACK_ADDED_TO_PEER_CONNECTION]({ commit }, stream: MediaStream) {
 		commit(SET_REMOTE_MEDIA_STREAM, stream);

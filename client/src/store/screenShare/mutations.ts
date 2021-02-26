@@ -10,16 +10,19 @@ export const mutations: MutationTree<ScreenShareState> = {
 
 	[ADD_P2P_CONNECTION](state, p2pConnection: P2PConnection) {
 		state.connections[p2pConnection.id] = p2pConnection;
+		state.connections = set(state.connections);
 	},
 
     [ADD_TRACK_TO_P2P_CONNECTION](state, { connectionId, stream }) {
         console.log('ADD_TRACK_TO_P2P_CONNECTION', stream);
         state.connections[connectionId].streams.push(stream);
+		state.connections = set(state.connections);
     },
 
 	[SET_P2P_RECIEVED](state, p2pId: string) {
 		console.log(SET_P2P_RECIEVED, p2pId);
 		state.connections[p2pId].receivedResponse = true;
+		state.connections = set(state.connections);
 	},
 
 	[SET_REMOTE_MEDIA_STREAM](state, stream: MediaStream) {
@@ -27,3 +30,10 @@ export const mutations: MutationTree<ScreenShareState> = {
 		state.remoteMediaStream = stream;
 	}
 };
+
+// Vuex doesn't detect changes to items in an array,
+// so we have to mutate the array itself to maintain
+// reactivity
+function set(obj: object) {
+	return { ...obj };
+}

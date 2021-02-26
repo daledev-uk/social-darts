@@ -25,19 +25,16 @@ export default class VideoSource extends Vue {
     private requestorUserId: string = '';
 
 	private p2pConn: RTCPeerConnection|null = null;
+	private answer: RTCSessionDescriptionInit;
 
 	public async created() {
 		const videoSource = await videoSourceApi.get(this.videoSourceId);
         this.requestorUserId = videoSource.userId;
 
-		const offer: RTCSessionDescriptionInit = JSON.parse(videoSource.offer);
-
-		if (offer) {
+		if (videoSource.offer) {
             this.requestorSocketId = videoSource.socketId;
-			this.p2pConn = peerApi.createNewConnection();
-			await peerApi.attachOfferToConnection(this.p2pConn, offer);
-
-			// TODO, is an answer required for one way?
+			this.p2pConn = peerApi.createNewConnection();			
+			this.answer = await peerApi.attachOfferToConnection(this.p2pConn, videoSource.offer);
 		}
 	}
 
@@ -48,7 +45,8 @@ export default class VideoSource extends Vue {
 	public onMediaStreamStart(mediaStream: MediaStream) {
         console.log('mediaStream started', mediaStream);
 		mediaStream.getTracks().forEach(track => this.p2pConn!.addTrack(track, mediaStream));
-        socketApi.confirmVideoForSource(this.requestorSocketId, this.requestorUserId, this.videoSourceId);
+
+        socketApi.confirmVideoForSource(this.requestorSocketId, this.requestorUserId, this.videoSourceId, this.answer);
 	}
 }
 </script>

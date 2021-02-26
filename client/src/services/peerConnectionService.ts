@@ -27,8 +27,20 @@ class PeerConnectionService {
 		return offer;
 	}
 
-	public attachOfferToConnection(p2pConn: RTCPeerConnection, remoteOffer: RTCSessionDescriptionInit): Promise<void> {
-		return p2pConn.setRemoteDescription(new RTCSessionDescription(remoteOffer));
+	public async attachOfferToConnection(p2pConn: RTCPeerConnection, remoteOffer: RTCSessionDescriptionInit): Promise<RTCSessionDescriptionInit> {
+		await p2pConn.setRemoteDescription(new RTCSessionDescription(remoteOffer));
+		const answer = await p2pConn.createAnswer();
+		await p2pConn.setLocalDescription(new RTCSessionDescription(answer));
+		return answer;
+	}
+
+	public async attachAnswerToConnection(p2pConn: RTCPeerConnection, remoteAnswer: RTCSessionDescriptionInit): Promise<void> {
+		await p2pConn.setRemoteDescription(new RTCSessionDescription(remoteAnswer));
+	}
+
+	public async createAnswer(p2pConn: RTCPeerConnection): Promise<void> {
+		const answer = await p2pConn.createAnswer();
+		await p2pConn.setRemoteDescription(new RTCSessionDescription(answer));
 	}
 
 	public addMediaStream(mediaStream: MediaStream) {
@@ -37,7 +49,7 @@ class PeerConnectionService {
 
 	public async setupLocalPeerOffer(): Promise<RTCSessionDescriptionInit> {
 		const offer = await this.peerConnection.createOffer();
-		      await this.peerConnection.setLocalDescription(new RTCSessionDescription(offer));
+		await this.peerConnection.setLocalDescription(new RTCSessionDescription(offer));
 		return offer;
 	}
 

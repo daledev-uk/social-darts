@@ -1,6 +1,7 @@
 import { authentication } from "@/security/authentication";
 import { store } from "@/store";
 import { LOAD_CONNECTED_USER } from "@/store/app/actionTypes";
+import { SET_SOCKET_ID } from "@/store/app/mutationTypes";
 
 class SocketService {
 	private socket: SocketIOClient.Socket;
@@ -28,12 +29,13 @@ class SocketService {
 		});
 	}
 
-    public confirmVideoForSource(to: string, userId: string, videoSourceId: string) {
+    public confirmVideoForSource(to: string, userId: string, videoSourceId: string, answer: RTCSessionDescriptionInit) {
         this.socket.emit('CONFIRM_VIDEO_SOURCE', {			
 			to,
             userId,
             from: this.socket.id,
-            videoSourceId
+            videoSourceId,
+			answer
 		});
     }
 
@@ -42,6 +44,8 @@ class SocketService {
 			this.socket.emit('IDENTIFY', authentication.getUserId());
             store.dispatch(LOAD_CONNECTED_USER, this.socket.id);
         }
+		this.socket.on('connected', () => store.dispatch(SET_SOCKET_ID, this.socket.id));
+		this.socket.on('reconnect', () => store.dispatch(SET_SOCKET_ID, this.socket.id));
     }
 }
 

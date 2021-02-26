@@ -91,7 +91,7 @@
               <RemoteVideo v-else />
             </div>
 
-            <v-card-text class="text-center">
+            <v-card-text v-if="!p2pConnection.receivedResponse" class="text-center">
               Scan the QR code with your mobile device or tablet to use that
               device as your video feed
             </v-card-text>
@@ -173,7 +173,7 @@ export default class TestVideoModel extends Vue {
     this.videoSourceInitateUrl = await videoSourceApi.createLink(
       this.loggedOnUser.socketId,
       this.p2pConnection.id,
-      JSON.stringify(this.p2pConnection.offer)
+      this.p2pConnection.offer
     );
     this.cameraStarted = true;
   }

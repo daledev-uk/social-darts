@@ -77,14 +77,17 @@ export class Server {
             socket.on("CONFIRM_VIDEO_SOURCE", data => {
                 const receiptientSocket = socketManager.getSocketByUserId(data.userId);
                 const to = socket.to(data.to);
+
                 receiptientSocket?.emit("VIDEO_SOURCE_CONFIRMED", {
                     videoSourceId: data.videoSourceId,
-                    videoSourceSocketId: data.from
+                    videoSourceSocketId: data.from,
+                    answer: data.answer
                 });
 
                 to?.emit("VIDEO_SOURCE_CONFIRMED", {
                     videoSourceId: data.videoSourceId,
-                    videoSourceSocketId: data.from
+                    videoSourceSocketId: data.from,
+                    answer: data.answer
                 });
             });
         });
