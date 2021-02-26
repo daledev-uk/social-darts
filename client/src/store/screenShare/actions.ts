@@ -17,6 +17,9 @@ export const actions: ActionTree<ScreenShareState, AppState> = {
 
 	async [CREATE_NEW_P2P_CONNECTION]({ commit }) {
 		const connection = peerApi.createNewConnection();
+		connection.onconnectionstatechange = (ev: Event) => console.log('state change', ev);
+		connection.onsignalingstatechange = (ev: Event) => console.log('state change', ev);
+
 		const connectionId = uuidv4();		
 		const offer = await peerApi.createOfferOfConnection(connection);
 
@@ -28,6 +31,7 @@ export const actions: ActionTree<ScreenShareState, AppState> = {
             streams: []
 		}
 		connection.ontrack = ({ streams: [stream] }) => commit(ADD_TRACK_TO_P2P_CONNECTION, { connectionId, stream });
+
 		commit(ADD_P2P_CONNECTION, p2pConnection);
 		return p2pConnection;
 	},

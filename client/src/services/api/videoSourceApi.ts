@@ -3,7 +3,7 @@ import {CreateVideoSourceUrlRequest} from '../../../../server/src/viewModels/req
 import {VideoSourceUrlResponse} from '../../../../server/src/viewModels/responses/VideoSourceUrlResponse';
 import {VideoSourceResponse} from '../../../../server/src/viewModels/responses/VideoSourceResponse';
 
-const API_SERVER_URL = process.env.VUE_APP_ROOT_API ? process.env.VUE_APP_ROOT_API : 'http://localhost:5000';
+const API_SERVER_URL = process.env.VUE_APP_API_HOST ? process.env.VUE_APP_API_HOST : 'http://localhost:5000';
 
 class VideoSourceApi {
 	public async createLink(socketId: string, p2pId: string, offer: RTCSessionDescriptionInit): Promise<string> {

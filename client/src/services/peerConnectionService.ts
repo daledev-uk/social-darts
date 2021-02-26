@@ -1,4 +1,4 @@
-import {store} from '@/store';
+import { store } from '@/store';
 import { ON_TRACK_ADDED_TO_PEER_CONNECTION } from '@/store/screenShare/actionTypes';
 
 class PeerConnectionService {
@@ -18,12 +18,17 @@ class PeerConnectionService {
 	}
 
 	public createNewConnection(): RTCPeerConnection {
-		return new RTCPeerConnection();
+		console.log('createNewConnection()');
+		const p2pConn = new RTCPeerConnection();
+		p2pConn.onnegotiationneeded=this.negotiationEventHandler;
+		p2pConn.onicecandidate=this.iceCandidateEventHandler;
+		return p2pConn;
 	}
 
-	public async createOfferOfConnection(connection: RTCPeerConnection): Promise<RTCSessionDescriptionInit> {
-		const offer = await connection.createOffer();
-		await connection.setLocalDescription(new RTCSessionDescription(offer));
+	public async createOfferOfConnection(p2pConn: RTCPeerConnection): Promise<RTCSessionDescriptionInit> {
+		const offer = await p2pConn.createOffer();
+		await p2pConn.setLocalDescription(new RTCSessionDescription(offer));
+		console.log('createOfferOfConnection()', p2pConn);
 		return offer;
 	}
 
@@ -31,16 +36,24 @@ class PeerConnectionService {
 		await p2pConn.setRemoteDescription(new RTCSessionDescription(remoteOffer));
 		const answer = await p2pConn.createAnswer();
 		await p2pConn.setLocalDescription(new RTCSessionDescription(answer));
+		console.log('attachOfferToConnection()', p2pConn);
 		return answer;
 	}
 
 	public async attachAnswerToConnection(p2pConn: RTCPeerConnection, remoteAnswer: RTCSessionDescriptionInit): Promise<void> {
-		await p2pConn.setRemoteDescription(new RTCSessionDescription(remoteAnswer));
+		if (p2pConn.signalingState !== 'stable') {
+			await p2pConn.setRemoteDescription(new RTCSessionDescription(remoteAnswer));
+			console.log('attachAnswerToConnection() attached', p2pConn);
+		} else {
+			console.log('attachAnswerToConnection() attached NOT made, state already stable', p2pConn, remoteAnswer);
+		}
+
 	}
 
 	public async createAnswer(p2pConn: RTCPeerConnection): Promise<void> {
 		const answer = await p2pConn.createAnswer();
 		await p2pConn.setRemoteDescription(new RTCSessionDescription(answer));
+		console.log('createAnswer()', p2pConn);
 	}
 
 	public addMediaStream(mediaStream: MediaStream) {
@@ -66,6 +79,18 @@ class PeerConnectionService {
 
 	private ontrack(stream: MediaStream) {
 		return store.dispatch(ON_TRACK_ADDED_TO_PEER_CONNECTION, stream);
+	}
+
+	private iceCandidateEventHandler(event: any) {
+		if (event.candidate == null) {
+			console.log("All ICE Candidates are sent", event);
+		} else {
+			console.log("Send ICE Candidate", event);
+		}
+	}
+
+	private negotiationEventHandler() {
+		console.log('Handle Negotitation');
 	}
 }
 

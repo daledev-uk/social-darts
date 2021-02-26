@@ -44,8 +44,8 @@ class SocketService {
 			this.socket.emit('IDENTIFY', authentication.getUserId());
             store.dispatch(LOAD_CONNECTED_USER, this.socket.id);
         }
-		this.socket.on('connected', () => store.dispatch(SET_SOCKET_ID, this.socket.id));
-		this.socket.on('reconnect', () => store.dispatch(SET_SOCKET_ID, this.socket.id));
+		this.socket.on('connected', () => store.commit(SET_SOCKET_ID, this.socket.id));
+		this.socket.on('reconnect', () => store.commit(SET_SOCKET_ID, this.socket.id));
     }
 }
 

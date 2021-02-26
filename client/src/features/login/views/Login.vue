@@ -5,7 +5,7 @@
     </v-card-text>
 
 	<v-card-actions>
-		<v-btn href="http://localhost:5000/login" variant="secondary">
+		<v-btn :href="loginUrl" variant="secondary">
 			<v-icon left>
 			mdi-google
 			</v-icon>
@@ -18,8 +18,15 @@
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from "vue-property-decorator";
 
+const API_SERVER_URL = process.env.VUE_APP_API_HOST ? process.env.VUE_APP_API_HOST : 'http://localhost:5000';
+
 @Component
-export default class Login extends Vue {}
+export default class Login extends Vue {
+
+	public get loginUrl() {
+		return `${API_SERVER_URL}/login`;
+	}
+}
 </script>
 
 <style lang="scss">
