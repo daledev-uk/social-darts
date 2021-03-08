@@ -2,17 +2,17 @@
   <v-container>
     Share ID : {{ videoSourceId }}
     <br />
-    <LocalVideo v-if="hasP2PConnection" @mediastreamstart="onMediaStreamStart" />    
+    <LocalVideo v-if="videoSourceLoaded" @mediastreamstart="onMediaStreamStart" />    
   </v-container>
 </template>
 
 <script lang="ts">
-import { socketApi } from "@/services/socketService";
-import { Component, Prop, Vue, Watch } from "vue-property-decorator";
+import { Component, Prop, Vue } from "vue-property-decorator";
+import { Action } from "vuex-class";
+import { RemotePeer, P2PConnection, CreateP2PConnectionRequest } from "@/store/screenShare";
+import { CREATE_NEW_P2P_CONNECTION, MAKE_P2P_OFFER } from "@/store/screenShare/actionTypes";
 import { videoSourceApi } from "../../../services/api/videoSourceApi";
-import { peerApi } from "../../../services/peerConnectionService";
 import LocalVideo from "../../lobby/components/LocalVideo.vue";
-import RemoteVideo from "../../lobby/components/RemoteVideo.vue";
 
 @Component({
   components: {
@@ -21,32 +21,34 @@ import RemoteVideo from "../../lobby/components/RemoteVideo.vue";
 })
 export default class VideoSource extends Vue {
 	@Prop() public videoSourceId!: string;
-    private requestorSocketId: string = '';
-    private requestorUserId: string = '';
 
-	private p2pConn: RTCPeerConnection|null = null;
-	private answer: RTCSessionDescriptionInit;
+	@Action(CREATE_NEW_P2P_CONNECTION)
+	public createNewP2pConnection: (req: CreateP2PConnectionRequest) => Promise<P2PConnection>;
+	@Action(MAKE_P2P_OFFER)
+	public makeOffer: (p2pConnId: string) => Promise<void>;
+
+	public videoSourceLoaded = false;
+
+	private p2pConn = {} as P2PConnection;
 
 	public async created() {
 		const videoSource = await videoSourceApi.get(this.videoSourceId);
-        this.requestorUserId = videoSource.userId;
 
-		if (videoSource.offer) {
-            this.requestorSocketId = videoSource.socketId;
-			this.p2pConn = peerApi.createNewConnection();			
-			this.answer = await peerApi.attachOfferToConnection(this.p2pConn, videoSource.offer);
-		}
+		this.p2pConn = await this.createNewP2pConnection({
+			p2pId: videoSource.id,
+			remotePeer: {
+				type: 'user',
+				socketId: videoSource.socketId,
+				userId: videoSource.userId
+			}
+		});
+		this.videoSourceLoaded = true;
 	}
 
-	public get hasP2PConnection(): boolean {
-		return !!this.p2pConn;
-	}
-
-	public onMediaStreamStart(mediaStream: MediaStream) {
+	public async onMediaStreamStart(mediaStream: MediaStream) {
         console.log('mediaStream started', mediaStream);
-		mediaStream.getTracks().forEach(track => this.p2pConn!.addTrack(track, mediaStream));
-
-        socketApi.confirmVideoForSource(this.requestorSocketId, this.requestorUserId, this.videoSourceId, this.answer);
+		mediaStream.getTracks().forEach(track => this.p2pConn.connection.addTrack(track, mediaStream));
+		await this.makeOffer(this.p2pConn.id);
 	}
 }
 </script>

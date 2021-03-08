@@ -1,6 +1,14 @@
 import { MutationTree } from 'vuex';
 import { P2PConnection, ScreenShareState } from '.';
-import { ADD_P2P_CONNECTION, ADD_TRACK_TO_P2P_CONNECTION, SET_P2P_RECIEVED, SET_REMOTE_MEDIA_STREAM, UPDATE_USER_LIST } from './mutationTypes';
+import { 
+	ADD_P2P_CONNECTION, 
+	ADD_TRACK_TO_P2P_CONNECTION, 
+	SET_P2P_RECIEVED, 
+	SET_REMOTE_MEDIA_STREAM, 
+	UPDATE_USER_LIST,
+	UPDATE_OFFER,
+	UPDATE_P2P_CONN
+} from './mutationTypes';
 
 export const mutations: MutationTree<ScreenShareState> = {
 
@@ -10,6 +18,16 @@ export const mutations: MutationTree<ScreenShareState> = {
 
 	[ADD_P2P_CONNECTION](state, p2pConnection: P2PConnection) {
 		state.connections[p2pConnection.id] = p2pConnection;
+		state.connections = set(state.connections);
+	},
+
+	[UPDATE_P2P_CONN](state, p2pConnection: P2PConnection) {
+		state.connections[p2pConnection.id] = p2pConnection;
+		state.connections = set(state.connections);
+	},
+
+	[UPDATE_OFFER](state, { id, offer }) {
+		state.connections[id].offer = offer;
 		state.connections = set(state.connections);
 	},
 

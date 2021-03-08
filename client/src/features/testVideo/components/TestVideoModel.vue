@@ -88,15 +88,15 @@
 
             <div class="text-center">
               <vue-qrcode
-                v-if="!p2pConnection.receivedResponse"
+                v-if="!remoteVideoReady"
                 :value="videoSourceInitateUrl"
                 :width="300"
               />
-              <RemoteVideo v-else />
+              <RemoteVideo v-else :p2pConn="p2pConnection" />
             </div>
 
             <v-card-text
-              v-if="!p2pConnection.receivedResponse"
+              v-if="!remoteVideoReady"
               class="text-center"
             >
               Scan the QR code with your mobile device or tablet to use that
@@ -110,11 +110,11 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue, Watch } from "vue-property-decorator";
+import { Component, Vue } from "vue-property-decorator";
 import VueQrcode from "vue-qrcode";
 import { Getter, Action } from "vuex-class";
 import { CREATE_NEW_P2P_CONNECTION } from "../../../store/screenShare/actionTypes";
-import { P2PConnection } from "../../../store/screenShare/index";
+import { CreateP2PConnectionRequest, P2PConnection, RemotePeer } from "../../../store/screenShare/index";
 import { videoSourceApi } from "../../../services/api/videoSourceApi";
 import { OnlineUser } from "../../../../../server/src/viewModels/onlineUser";
 import RemoteVideo from "@/features/lobby/components/RemoteVideo.vue";
@@ -127,7 +127,7 @@ import RemoteVideo from "@/features/lobby/components/RemoteVideo.vue";
 })
 export default class TestVideoModel extends Vue {
   @Action(CREATE_NEW_P2P_CONNECTION)
-  public createNewP2pConnection: () => Promise<P2PConnection>;
+  public createNewP2pConnection: (req: CreateP2PConnectionRequest) => Promise<P2PConnection>;
   @Getter public loggedOnUser!: OnlineUser;
   @Getter public connections!: { [connectionId: string]: P2PConnection };
 
@@ -139,11 +139,6 @@ export default class TestVideoModel extends Vue {
   public cameraStarted = false;
   public mediaStream: MediaStream;
   public p2pConnection: P2PConnection;
-
-  @Watch("connections", { immediate: true })
-  public onConnectionsUpdate() {
-    console.log("connections updated");
-  }
 
   public async startVideo() {
     if (this.videoSource == "this") {
@@ -176,15 +171,25 @@ export default class TestVideoModel extends Vue {
   }
 
   public async createQrCode() {
-    this.p2pConnection = await this.createNewP2pConnection();
+    this.p2pConnection = await this.createNewP2pConnection({
+      remotePeer: {
+        type: 'unknown',
+        socketId: '',
+        userId: ''
+      }
+    });      
 
     this.videoSourceInitateUrl = await videoSourceApi.createLink(
-      this.loggedOnUser.socketId,
       this.p2pConnection.id,
-      this.p2pConnection.offer
+      this.loggedOnUser.socketId,      
+      this.p2pConnection.offer as RTCSessionDescriptionInit
     );
     this.cameraStarted = true;
     console.log("URL: ", this.videoSourceInitateUrl);
+  }
+
+  public get remoteVideoReady(): boolean {
+    return this.p2pConnection.streams.length > 0;
   }
 }
 </script>

@@ -26,8 +26,23 @@ export const lobby: Module<ScreenShareState, AppState> = {
 
 export interface P2PConnection {
 	id: string,
+	localPeerType: 'user'|'device'
+	remotePeer: RemotePeer,
 	connection: RTCPeerConnection,
-	offer: RTCSessionDescriptionInit,
 	receivedResponse: boolean,
-    streams: MediaStream[]
+    streams: MediaStream[],
+	offer?: RTCSessionDescriptionInit
+}
+
+export interface RemotePeer {
+	type: 'user'|'device'|'unknown',
+	socketId: string,
+	userId?: string,
+	offer?: RTCSessionDescriptionInit,
+	answer?: RTCSessionDescriptionInit
+}
+
+export interface CreateP2PConnectionRequest {
+    remotePeer: RemotePeer;
+    p2pId?: string;
 }

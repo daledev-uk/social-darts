@@ -6,7 +6,7 @@ import {VideoSourceResponse} from '../../../../server/src/viewModels/responses/V
 const API_SERVER_URL = process.env.VUE_APP_API_HOST ? process.env.VUE_APP_API_HOST : 'http://localhost:5000';
 
 class VideoSourceApi {
-	public async createLink(socketId: string, p2pId: string, offer: RTCSessionDescriptionInit): Promise<string> {
+	public async createLink(p2pId: string, socketId: string, offer: RTCSessionDescriptionInit): Promise<string> {
         const request: CreateVideoSourceUrlRequest = { socketId, p2pId, offer };
 		const response: VideoSourceUrlResponse = await api.send('POST', `${API_SERVER_URL}/video-source`, request);
         return `${process.env.VUE_APP_CLIENT_HOST}/video-source/${response.urlId}`;

@@ -18,7 +18,7 @@ class VideoSourceController {
             id: request.p2pId,
             userId: request.userId,
             socketId: request.socketId,
-            offer: request.offer
+            offer: 1 /* request.offer */
         });
 
         const urlResponse: VideoSourceUrlResponse = { urlId: urlRecord.id }; 

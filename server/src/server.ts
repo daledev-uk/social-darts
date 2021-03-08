@@ -59,35 +59,22 @@ export class Server {
             socket.on("IDENTIFY", (userId: string) => {
                 socketManager.linkSocketToUser(socket.id, userId);
             });
-            
-            socket.on("MEDIA_STREAM_OFFER", (data: any) => {
-                socket.to(data.to).emit("MEDIA_STREAM_OFFER", {
+
+            socket.on("SEND_NEW_OFFER", data => {
+                const to = socket.to(data.to.socketId);
+                to?.emit("DELIVER_OFFER", {
+                    p2pConnId: data.p2pConnId,
                     offer: data.offer,
-                    socket: socket.id
+                    senderSocketId: socket.id                   
                 });
             });
 
-            socket.on("ACCEPTED_STREAM_OFFER", data => {
-                socket.to(data.to).emit("MEDIA_STREAM_ACCEPTED", { // answer-made
-                    socket: socket.id,
-                    answer: data.answer
-                });
-            });
-
-            socket.on("CONFIRM_VIDEO_SOURCE", data => {
-                const receiptientSocket = socketManager.getSocketByUserId(data.userId);
-                const to = socket.to(data.to);
-
-                receiptientSocket?.emit("VIDEO_SOURCE_CONFIRMED", {
-                    videoSourceId: data.videoSourceId,
-                    videoSourceSocketId: data.from,
-                    answer: data.answer
-                });
-
-                to?.emit("VIDEO_SOURCE_CONFIRMED", {
-                    videoSourceId: data.videoSourceId,
-                    videoSourceSocketId: data.from,
-                    answer: data.answer
+            socket.on("SEND_ANSWER", data => {
+                const to = socket.to(data.to.socketId);
+                to?.emit("DELIVER_ANSWER", {
+                    p2pConnId: data.p2pConnId,
+                    answer: data.answer,
+                    senderSocketId: socket.id                    
                 });
             });
         });

@@ -52,8 +52,6 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import {Action, Getter} from 'vuex-class';
-import {peerApi} from '../../../services/peerConnectionService';
-import {socketApi} from '../../../services/socketService';
 import LocalVideo from '../components/LocalVideo.vue';
 import RemoteVideo from '../components/RemoteVideo.vue';
 import { OnlineUser } from '../../../../../server/src/viewModels/onlineUser';
@@ -79,18 +77,8 @@ export default class Lobby extends Vue {
 		return this.loggedOnUser.socketId;
 	}
 
-	public selectUser(userId: string) {
-		this.selectedUser = userId;
-  		this.callUser(userId);
-	}
-
 	public get talkingWithHeaderText() {
 		return this.selectedUser ? `Talking with: "Socket: ${this.selectedUser}"` : 'Select active user on the left menu.';
-	}
-
-	private async callUser(socketId: string) {
-		const offer = await peerApi.setupLocalPeerOffer();
-		socketApi.offerUserVideoShare(socketId, offer);
 	}
 }
 </script>

@@ -3,24 +3,29 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Watch } from "vue-property-decorator";
-import {Getter} from 'vuex-class';
+import { P2PConnection } from "@/store/screenShare";
+import { Component, Prop, Vue, Watch } from "vue-property-decorator";
 
 @Component
 export default class RemoteVideo extends Vue {
 	public error = false;
 	public initiated = false;
 
-	@Getter public remoteMediaStream!: MediaStream;
+	@Prop() public p2pConn!: P2PConnection;
 
-	@Watch('remoteMediaStream')
-	public onMediaStreamChange(stream: MediaStream) {
-		if (!this.initiated && stream) {
-			console.log('Setup remote video');
+	public mounted() {
+		this.onConnectionUpdated(this.p2pConn);
+	}
 
-			const remoteVideo = this.$refs.remoteVidElement as HTMLVideoElement;
+	@Watch('p2pConn')
+	public onConnectionUpdated(p2p: P2PConnection) {
+		if (!this.initiated && p2p.streams.length > 0) {			
+			const remoteVideo = this.$refs.remoteVidElement as HTMLVideoElement;			
 			if (remoteVideo) {
-				remoteVideo.srcObject = stream;
+				for (const stream of p2p.streams) {
+					console.log('onConnectionUpdated, adding', stream);
+					remoteVideo.srcObject = stream;
+				}				
 			}
 		}
 	}
@@ -28,5 +33,9 @@ export default class RemoteVideo extends Vue {
 </script>
 
 <style lang="scss">
-section { width: 100%; }
+	section { width: 100%; }
+
+	video {
+		border: 1px solid white;
+	}
 </style>

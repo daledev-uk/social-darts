@@ -2,6 +2,7 @@ import { authentication } from "@/security/authentication";
 import { store } from "@/store";
 import { LOAD_CONNECTED_USER } from "@/store/app/actionTypes";
 import { SET_SOCKET_ID } from "@/store/app/mutationTypes";
+import { P2PConnection, RemotePeer } from "@/store/screenShare";
 
 class SocketService {
 	private socket: SocketIOClient.Socket;
@@ -15,29 +16,29 @@ class SocketService {
 		}
 	}
 
-	public async offerUserVideoShare(socketId: string, offer: RTCSessionDescriptionInit) {
-		this.socket.emit('MEDIA_STREAM_OFFER', {
-			offer,
-			to: socketId
-		});
-	}
-
-	public acceptMediaStreamShare(answer: RTCSessionDescriptionInit, socketId: string) {
-		this.socket.emit('ACCEPTED_STREAM_OFFER', {
+    public confirmVideoForSource(p2pConnId: string, remotePeer: RemotePeer, answer: RTCSessionDescriptionInit) {
+        this.socket.emit('SEND_ANSWER', {		
+			p2pConnId,
 			answer,
-			to: socketId
-		});
-	}
-
-    public confirmVideoForSource(to: string, userId: string, videoSourceId: string, answer: RTCSessionDescriptionInit) {
-        this.socket.emit('CONFIRM_VIDEO_SOURCE', {			
-			to,
-            userId,
-            from: this.socket.id,
-            videoSourceId,
-			answer
+			from: this.socket.id,
+			to : {
+				socketId: remotePeer.socketId,
+				userId: remotePeer.userId
+			}            			
 		});
     }
+
+	public sendP2pOffer(p2pConn: P2PConnection) {
+		this.socket.emit('SEND_NEW_OFFER', {		
+			p2pConnId: p2pConn.id,
+			offer: p2pConn.offer,
+			from: this.socket.id,
+			to : {
+				socketId: p2pConn.remotePeer.socketId,
+				userId: p2pConn.remotePeer.userId
+			}            			
+		});
+	}
 
     private onSocketConnected() {
         if (authentication.isAuthenticated()) {
